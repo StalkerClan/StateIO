@@ -1,0 +1,9 @@
+Logs
+Library
+Temp
+Packages
+*.csproj
+.vsconfig
+ProjectSettings/ProjectVersion.txt
+StateIO.sln
+UserSettings/EditorUserSettings.asset
