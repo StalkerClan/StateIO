@@ -16,14 +16,20 @@ public class PlayerFighter : Fighter
 
     private void GetPositions()
     {
-        for (int i = 0; i < positions.Length; i++)
-        {
-            Debug.Log(positions[i]);
-        }
+
     }
 
     private void Update()
     {
         Marching();
+        //Move();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("OpponentBuilding") || collision.CompareTag("NeutralBuilding"))
+        {
+
+        }
     }
 }

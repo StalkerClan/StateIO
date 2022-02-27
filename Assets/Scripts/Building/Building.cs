@@ -7,19 +7,29 @@ public abstract class Building : MonoBehaviour, IInitializeVariables
     public GameObject fighterPrefab;
     public SpriteRenderer spriteRenderer;
     public Color buildingColor;
+    public List<Vector3[]> listOfPositions;
+    public List<Vector3> directions;
     public Vector3 direction;
+    public Vector3 leftDirection;
+    public Vector3 rightDirection;
+    public Vector3 mostLeftDirection;
+    public Vector3 mostRightDirection;
     public GlobalVariables.Building building;
     public FighterDirection fighterDirection;
     public List<GameObject> fighters;
+
     public float generatingCooldown;
     public float timeToGenerate;
     public float timer;
     public float totalTime;
     public float spacing;
+
     public int startFighter;
     public int maxCapacity;
     public int currentFighter;
+
     public bool isGenerating;
+    public bool isMarching;
 
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; set => spriteRenderer = value; }
     public Color BuildingColor { get => buildingColor; set => buildingColor = value; }
@@ -29,8 +39,12 @@ public abstract class Building : MonoBehaviour, IInitializeVariables
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         buildingColor = spriteRenderer.color;
+        listOfPositions = new List<Vector3[]>();
+        directions = new List<Vector3>();
         fighters = new List<GameObject>();
+        spacing = 0.5f;
         isGenerating = true;
+        isMarching = false;
     }
 
     public void GetBuildingType()
@@ -68,6 +82,7 @@ public abstract class Building : MonoBehaviour, IInitializeVariables
         {
             currentFighter++;
             timeToGenerate += generatingCooldown;
+            Debug.Log(currentFighter);
         }
     }
 

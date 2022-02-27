@@ -8,7 +8,7 @@ public abstract class Fighter : MonoBehaviour, IInitializeVariables
     public Rigidbody2D rb;
     public GlobalVariables.Fighter fighter;
     public Vector3[] positions;
-    private Vector2 moveDirection;
+    private Vector3 moveDirection;
     public float moveSpeed;
     private bool moving = false;
     private int positionIndex;
@@ -26,7 +26,7 @@ public abstract class Fighter : MonoBehaviour, IInitializeVariables
         switch (fighter)
         {
             case GlobalVariables.Fighter.Player:
-                moveSpeed = 1f;
+                moveSpeed = 5f;
                 break;
             case GlobalVariables.Fighter.Opponent:
                 moveSpeed = 1f;
@@ -52,5 +52,10 @@ public abstract class Fighter : MonoBehaviour, IInitializeVariables
             if (positionIndex >= positions.Length)
                 moving = false;
         }
+    }
+
+    public void Move()
+    {
+        rb.MovePosition(transform.position + moveDirection * Time.deltaTime * moveSpeed);
     }
 }
