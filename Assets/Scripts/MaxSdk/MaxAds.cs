@@ -5,7 +5,20 @@ using UnityEngine;
 public class MaxAds : MonoBehaviour
 {
     private static MaxAds instance;
-    public static MaxAds Instance { get { return instance; } }
+    public static MaxAds Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                GameObject ga = new GameObject("MaxAds");
+                instance = ga.AddComponent<MaxAds>();
+                DontDestroyOnLoad(ga);
+            }
+
+            return instance;
+        }
+    }
 
     private const string MaxSdkKey = "ENTER_MAX_SDK_KEY_HERE";
     private const string InterstitialAdUnitId = "ENTER_INTERSTITIAL_AD_UNIT_ID_HERE";
@@ -21,27 +34,12 @@ public class MaxAds : MonoBehaviour
     private int rewardedRetryAttempt;
     private int rewardedInterstitialRetryAttempt;
 
-    private void Awake()
+    private bool showDebug = false;
+    private MaxSdk.BannerPosition bannerPosition = MaxSdkBase.BannerPosition.BottomCenter;
+    private MaxSdk.AdViewPosition mrecAdPosition = MaxSdkBase.AdViewPosition.BottomCenter;
+
+    public void InitMaxSDK()
     {
-        if(instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-    }
-
-
-    /*
-
-    void Start()
-    {
-        showInterstitialButton.onClick.AddListener(ShowInterstitial);
-        showRewardedButton.onClick.AddListener(ShowRewardedAd);
-        showRewardedInterstitialButton.onClick.AddListener(ShowRewardedInterstitialAd);
-        showBannerButton.onClick.AddListener(ToggleBannerVisibility);
-        showMRecButton.onClick.AddListener(ToggleMRecVisibility);
-        mediationDebuggerButton.onClick.AddListener(MaxSdk.ShowMediationDebugger);
-
         MaxSdkCallbacks.OnSdkInitializedEvent += sdkConfiguration =>
         {
             // AppLovin SDK is initialized, configure and start loading ads.
@@ -53,9 +51,8 @@ public class MaxAds : MonoBehaviour
             InitializeBannerAds();
             InitializeMRecAds();
 
-            // Initialize Adjust SDK
-            AdjustConfig adjustConfig = new AdjustConfig("YourAppToken", AdjustEnvironment.Sandbox);
-            Adjust.start(adjustConfig);
+            if (showDebug)
+                MaxSdk.ShowMediationDebugger();
         };
 
         MaxSdk.SetSdkKey(MaxSdkKey);
@@ -63,6 +60,8 @@ public class MaxAds : MonoBehaviour
     }
 
     #region Interstitial Ad Methods
+
+    public bool LoadingInterstitialAds { private set; get; }
 
     private void InitializeInterstitialAds()
     {
@@ -77,42 +76,42 @@ public class MaxAds : MonoBehaviour
         LoadInterstitial();
     }
 
-    void LoadInterstitial()
+    private void LoadInterstitial()
     {
-        interstitialStatusText.text = "Loading...";
         MaxSdk.LoadInterstitial(InterstitialAdUnitId);
     }
 
-    void ShowInterstitial()
+    public bool IsInterstitialReady
+    {
+        get { return MaxSdk.IsInterstitialReady(InterstitialAdUnitId); }
+    }
+
+    private void ShowInterstitial()
     {
         if (MaxSdk.IsInterstitialReady(InterstitialAdUnitId))
         {
-            interstitialStatusText.text = "Showing";
             MaxSdk.ShowInterstitial(InterstitialAdUnitId);
-        }
-        else
-        {
-            interstitialStatusText.text = "Ad not ready";
         }
     }
 
     private void OnInterstitialLoadedEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
     {
         // Interstitial ad is ready to be shown. MaxSdk.IsInterstitialReady(interstitialAdUnitId) will now return 'true'
-        interstitialStatusText.text = "Loaded";
         Debug.Log("Interstitial loaded");
 
         // Reset retry attempt
         interstitialRetryAttempt = 0;
+        LoadingInterstitialAds = false;
     }
 
     private void OnInterstitialFailedEvent(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
     {
         // Interstitial ad failed to load. We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds).
         interstitialRetryAttempt++;
-        double retryDelay = Math.Pow(2, Math.Min(6, interstitialRetryAttempt));
+        LoadingInterstitialAds = false;
+        double retryDelay = Mathf.Pow(2, Mathf.Min(6, interstitialRetryAttempt));
 
-        interstitialStatusText.text = "Load failed: " + errorInfo.Code + "\nRetrying in " + retryDelay + "s...";
+        string status = "Load failed: " + errorInfo.Code + "\nRetrying in " + retryDelay + "s...";
         Debug.Log("Interstitial failed to load with error code: " + errorInfo.Code);
 
         Invoke("LoadInterstitial", (float)retryDelay);
@@ -136,22 +135,14 @@ public class MaxAds : MonoBehaviour
     {
         // Interstitial ad revenue paid. Use this callback to track user revenue.
         Debug.Log("Interstitial revenue paid");
-
-        // Ad revenue
-        double revenue = adInfo.Revenue;
-
-        // Miscellaneous data
-        string countryCode = MaxSdk.GetSdkConfiguration().CountryCode; // "US" for the United States, etc - Note: Do not confuse this with currency code which is "USD" in most cases!
-        string networkName = adInfo.NetworkName; // Display name of the network that showed the ad (e.g. "AdColony")
-        string adUnitIdentifier = adInfo.AdUnitIdentifier; // The MAX Ad Unit ID
-        string placement = adInfo.Placement; // The placement this ad's postbacks are tied to
-
         TrackAdRevenue(adInfo);
     }
 
     #endregion
 
     #region Rewarded Ad Methods
+
+    public bool LoadingRewardedAd { private set; get; }
 
     private void InitializeRewardedAds()
     {
@@ -171,40 +162,41 @@ public class MaxAds : MonoBehaviour
 
     private void LoadRewardedAd()
     {
-        rewardedStatusText.text = "Loading...";
         MaxSdk.LoadRewardedAd(RewardedAdUnitId);
+        LoadingRewardedAd = true;
+    }
+
+    public bool IsRewardedAdReady
+    {
+        get { return MaxSdk.IsRewardedAdReady(RewardedAdUnitId); }
     }
 
     private void ShowRewardedAd()
     {
         if (MaxSdk.IsRewardedAdReady(RewardedAdUnitId))
         {
-            rewardedStatusText.text = "Showing";
             MaxSdk.ShowRewardedAd(RewardedAdUnitId);
-        }
-        else
-        {
-            rewardedStatusText.text = "Ad not ready";
         }
     }
 
     private void OnRewardedAdLoadedEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
     {
         // Rewarded ad is ready to be shown. MaxSdk.IsRewardedAdReady(rewardedAdUnitId) will now return 'true'
-        rewardedStatusText.text = "Loaded";
         Debug.Log("Rewarded ad loaded");
 
         // Reset retry attempt
         rewardedRetryAttempt = 0;
+        LoadingRewardedAd = false;
     }
 
     private void OnRewardedAdFailedEvent(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
     {
         // Rewarded ad failed to load. We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds).
         rewardedRetryAttempt++;
-        double retryDelay = Math.Pow(2, Math.Min(6, rewardedRetryAttempt));
+        LoadingRewardedAd = false;
+        double retryDelay = Mathf.Pow(2, Mathf.Min(6, rewardedRetryAttempt));
 
-        rewardedStatusText.text = "Load failed: " + errorInfo.Code + "\nRetrying in " + retryDelay + "s...";
+        string status = "Load failed: " + errorInfo.Code + "\nRetrying in " + retryDelay + "s...";
         Debug.Log("Rewarded ad failed to load with error code: " + errorInfo.Code);
 
         Invoke("LoadRewardedAd", (float)retryDelay);
@@ -244,22 +236,14 @@ public class MaxAds : MonoBehaviour
     {
         // Rewarded ad revenue paid. Use this callback to track user revenue.
         Debug.Log("Rewarded ad revenue paid");
-
-        // Ad revenue
-        double revenue = adInfo.Revenue;
-
-        // Miscellaneous data
-        string countryCode = MaxSdk.GetSdkConfiguration().CountryCode; // "US" for the United States, etc - Note: Do not confuse this with currency code which is "USD" in most cases!
-        string networkName = adInfo.NetworkName; // Display name of the network that showed the ad (e.g. "AdColony")
-        string adUnitIdentifier = adInfo.AdUnitIdentifier; // The MAX Ad Unit ID
-        string placement = adInfo.Placement; // The placement this ad's postbacks are tied to
-
         TrackAdRevenue(adInfo);
     }
 
     #endregion
 
     #region Rewarded Interstitial Ad Methods
+
+    public bool LoadingRewardedInterstitialAds { private set; get; }
 
     private void InitializeRewardedInterstitialAds()
     {
@@ -279,40 +263,38 @@ public class MaxAds : MonoBehaviour
 
     private void LoadRewardedInterstitialAd()
     {
-        rewardedInterstitialStatusText.text = "Loading...";
+        LoadingRewardedInterstitialAds = true;
         MaxSdk.LoadRewardedInterstitialAd(RewardedInterstitialAdUnitId);
     }
+
+    public bool IsRewardedInterstitialAdReady { get { return MaxSdk.IsRewardedInterstitialAdReady(RewardedInterstitialAdUnitId); } }
 
     private void ShowRewardedInterstitialAd()
     {
         if (MaxSdk.IsRewardedInterstitialAdReady(RewardedInterstitialAdUnitId))
         {
-            rewardedInterstitialStatusText.text = "Showing";
             MaxSdk.ShowRewardedInterstitialAd(RewardedInterstitialAdUnitId);
-        }
-        else
-        {
-            rewardedInterstitialStatusText.text = "Ad not ready";
         }
     }
 
     private void OnRewardedInterstitialAdLoadedEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
     {
         // Rewarded interstitial ad is ready to be shown. MaxSdk.IsRewardedInterstitialAdReady(rewardedInterstitialAdUnitId) will now return 'true'
-        rewardedInterstitialStatusText.text = "Loaded";
         Debug.Log("Rewarded interstitial ad loaded");
 
         // Reset retry attempt
         rewardedInterstitialRetryAttempt = 0;
+        LoadingRewardedInterstitialAds = false;
     }
 
     private void OnRewardedInterstitialAdFailedEvent(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
     {
         // Rewarded interstitial ad failed to load. We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds).
         rewardedInterstitialRetryAttempt++;
-        double retryDelay = Math.Pow(2, Math.Min(6, rewardedInterstitialRetryAttempt));
+        LoadingRewardedInterstitialAds = false;
+        double retryDelay = Mathf.Pow(2, Mathf.Min(6, rewardedInterstitialRetryAttempt));
 
-        rewardedInterstitialStatusText.text = "Load failed: " + errorInfo.Code + "\nRetrying in " + retryDelay + "s...";
+        string status = "Load failed: " + errorInfo.Code + "\nRetrying in " + retryDelay + "s...";
         Debug.Log("Rewarded interstitial ad failed to load with error code: " + errorInfo.Code);
 
         Invoke("LoadRewardedInterstitialAd", (float)retryDelay);
@@ -352,22 +334,14 @@ public class MaxAds : MonoBehaviour
     {
         // Rewarded interstitial ad revenue paid. Use this callback to track user revenue.
         Debug.Log("Rewarded interstitial ad revenue paid");
-
-        // Ad revenue
-        double revenue = adInfo.Revenue;
-
-        // Miscellaneous data
-        string countryCode = MaxSdk.GetSdkConfiguration().CountryCode; // "US" for the United States, etc - Note: Do not confuse this with currency code which is "USD" in most cases!
-        string networkName = adInfo.NetworkName; // Display name of the network that showed the ad (e.g. "AdColony")
-        string adUnitIdentifier = adInfo.AdUnitIdentifier; // The MAX Ad Unit ID
-        string placement = adInfo.Placement; // The placement this ad's postbacks are tied to
-
         TrackAdRevenue(adInfo);
     }
 
     #endregion
 
     #region Banner Ad Methods
+
+    private bool bannerAdsLoaded = false;
 
     private void InitializeBannerAds()
     {
@@ -379,23 +353,41 @@ public class MaxAds : MonoBehaviour
 
         // Banners are automatically sized to 320x50 on phones and 728x90 on tablets.
         // You may use the utility method `MaxSdkUtils.isTablet()` to help with view sizing adjustments.
-        MaxSdk.CreateBanner(BannerAdUnitId, MaxSdkBase.BannerPosition.TopCenter);
+        MaxSdk.CreateBanner(BannerAdUnitId, bannerPosition);
 
         // Set background or background color for banners to be fully functional.
         MaxSdk.SetBannerBackgroundColor(BannerAdUnitId, Color.black);
+        bannerAdsLoaded = false;
+    }
+
+    public bool BannerAdsReady { get { return bannerAdsLoaded; } }
+
+    public void LoadBannerAds()
+    {
+        if (bannerAdsLoaded)
+            return;
+
+        // Banners are automatically sized to 320x50 on phones and 728x90 on tablets.
+        // You may use the utility method `MaxSdkUtils.isTablet()` to help with view sizing adjustments.
+        MaxSdk.CreateBanner(BannerAdUnitId, bannerPosition);
+
+        // Set background or background color for banners to be fully functional.
+        MaxSdk.SetBannerBackgroundColor(BannerAdUnitId, Color.black);
+        bannerAdsLoaded = false;
     }
 
     private void ToggleBannerVisibility()
     {
+        if (!bannerAdsLoaded)
+            return;
+
         if (!isBannerShowing)
         {
             MaxSdk.ShowBanner(BannerAdUnitId);
-            showBannerButton.GetComponentInChildren<Text>().text = "Hide Banner";
         }
         else
         {
             MaxSdk.HideBanner(BannerAdUnitId);
-            showBannerButton.GetComponentInChildren<Text>().text = "Show Banner";
         }
 
         isBannerShowing = !isBannerShowing;
@@ -406,12 +398,14 @@ public class MaxAds : MonoBehaviour
         // Banner ad is ready to be shown.
         // If you have already called MaxSdk.ShowBanner(BannerAdUnitId) it will automatically be shown on the next ad refresh.
         Debug.Log("Banner ad loaded");
+        bannerAdsLoaded = true;
     }
 
     private void OnBannerAdFailedEvent(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
     {
         // Banner ad failed to load. MAX will automatically try loading a new ad internally.
         Debug.Log("Banner ad failed to load with error code: " + errorInfo.Code);
+        bannerAdsLoaded = false;
     }
 
     private void OnBannerAdClickedEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
@@ -423,22 +417,14 @@ public class MaxAds : MonoBehaviour
     {
         // Banner ad revenue paid. Use this callback to track user revenue.
         Debug.Log("Banner ad revenue paid");
-
-        // Ad revenue
-        double revenue = adInfo.Revenue;
-
-        // Miscellaneous data
-        string countryCode = MaxSdk.GetSdkConfiguration().CountryCode; // "US" for the United States, etc - Note: Do not confuse this with currency code which is "USD" in most cases!
-        string networkName = adInfo.NetworkName; // Display name of the network that showed the ad (e.g. "AdColony")
-        string adUnitIdentifier = adInfo.AdUnitIdentifier; // The MAX Ad Unit ID
-        string placement = adInfo.Placement; // The placement this ad's postbacks are tied to
-
         TrackAdRevenue(adInfo);
     }
 
     #endregion
 
     #region MREC Ad Methods
+
+    private bool mrecAdLoaded = false;
 
     private void InitializeMRecAds()
     {
@@ -449,20 +435,35 @@ public class MaxAds : MonoBehaviour
         MaxSdkCallbacks.MRec.OnAdRevenuePaidEvent += OnMRecAdRevenuePaidEvent;
 
         // MRECs are automatically sized to 300x250.
-        MaxSdk.CreateMRec(MRecAdUnitId, MaxSdkBase.AdViewPosition.BottomCenter);
+        MaxSdk.CreateMRec(MRecAdUnitId, mrecAdPosition);
+        mrecAdLoaded = false;
     }
+
+    public void LoadMRecAd()
+    {
+        if (mrecAdLoaded)
+            return;
+
+        MaxSdk.CreateMRec(MRecAdUnitId, mrecAdPosition);
+        mrecAdLoaded = false;
+    }
+
+    public bool MRecAdReady { get { return mrecAdLoaded; } }
 
     private void ToggleMRecVisibility()
     {
+        if (!mrecAdLoaded)
+            return;
+
         if (!isMRecShowing)
         {
             MaxSdk.ShowMRec(MRecAdUnitId);
-            showMRecButton.GetComponentInChildren<Text>().text = "Hide MREC";
+            //showMRecButton.GetComponentInChildren<Text>().text = "Hide MREC";
         }
         else
         {
             MaxSdk.HideMRec(MRecAdUnitId);
-            showMRecButton.GetComponentInChildren<Text>().text = "Show MREC";
+            //showMRecButton.GetComponentInChildren<Text>().text = "Show MREC";
         }
 
         isMRecShowing = !isMRecShowing;
@@ -473,12 +474,14 @@ public class MaxAds : MonoBehaviour
         // MRec ad is ready to be shown.
         // If you have already called MaxSdk.ShowMRec(MRecAdUnitId) it will automatically be shown on the next MRec refresh.
         Debug.Log("MRec ad loaded");
+        mrecAdLoaded = true;
     }
 
     private void OnMRecAdFailedEvent(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
     {
         // MRec ad failed to load. MAX will automatically try loading a new ad internally.
         Debug.Log("MRec ad failed to load with error code: " + errorInfo.Code);
+        mrecAdLoaded = false;
     }
 
     private void OnMRecAdClickedEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
@@ -490,16 +493,6 @@ public class MaxAds : MonoBehaviour
     {
         // MRec ad revenue paid. Use this callback to track user revenue.
         Debug.Log("MRec ad revenue paid");
-
-        // Ad revenue
-        double revenue = adInfo.Revenue;
-
-        // Miscellaneous data
-        string countryCode = MaxSdk.GetSdkConfiguration().CountryCode; // "US" for the United States, etc - Note: Do not confuse this with currency code which is "USD"!
-        string networkName = adInfo.NetworkName; // Display name of the network that showed the ad (e.g. "AdColony")
-        string adUnitIdentifier = adInfo.AdUnitIdentifier; // The MAX Ad Unit ID
-        string placement = adInfo.Placement; // The placement this ad's postbacks are tied to
-
         TrackAdRevenue(adInfo);
     }
 
@@ -507,15 +500,15 @@ public class MaxAds : MonoBehaviour
 
     private void TrackAdRevenue(MaxSdkBase.AdInfo adInfo)
     {
-        AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(AdjustConfig.AdjustAdRevenueSourceAppLovinMAX);
+        // Ad revenue
+        double revenue = adInfo.Revenue;
 
-        adjustAdRevenue.setRevenue(adInfo.Revenue, "USD");
-        adjustAdRevenue.setAdRevenueNetwork(adInfo.NetworkName);
-        adjustAdRevenue.setAdRevenueUnit(adInfo.AdUnitIdentifier);
-        adjustAdRevenue.setAdRevenuePlacement(adInfo.Placement);
+        // Miscellaneous data
+        string countryCode = MaxSdk.GetSdkConfiguration().CountryCode; // "US" for the United States, etc - Note: Do not confuse this with currency code which is "USD" in most cases!
+        string networkName = adInfo.NetworkName; // Display name of the network that showed the ad (e.g. "AdColony")
+        string adUnitIdentifier = adInfo.AdUnitIdentifier; // The MAX Ad Unit ID
+        string placement = adInfo.Placement; // The placement this ad's postbacks are tied to
 
-        Adjust.trackAdRevenue(adjustAdRevenue);
     }
 
-    */
 }
