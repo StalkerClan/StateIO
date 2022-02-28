@@ -1,13 +1,24 @@
+using System;
 using UnityEngine;
 
-public class State : MonoBehaviour
+public class State : MonoBehaviour, IInitializeVariables
 {
     public SpriteRenderer spriteRenderer;
     public GameObject owner;
-    public Color stateColor;
 
-    private void OnEnable()
+    private Building buildingOwner;
+    private GlobalVariables.Building buildingType;
+
+    private void Start()
     {
-        spriteRenderer.color = owner.GetComponent<Building>().BuildingColor;
+        InitializeVariables();
+    }
+
+    public void InitializeVariables()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        buildingOwner = owner.GetComponent<Building>();
+        buildingType = buildingOwner.BuildingType;
+        Utilities.SetStateColor(buildingType, spriteRenderer);
     }
 }

@@ -204,7 +204,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &271742354
 MonoBehaviour:
@@ -219,8 +219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 0}
-  owner: {fileID: 0}
-  stateColor: {r: 0, g: 0, b: 0, a: 0}
+  owner: {fileID: 1002398219}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,8 +296,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.1651287, y: 1.5991172, z: -7.7220287}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -421,23 +420,19 @@ MonoBehaviour:
   spriteRenderer: {fileID: 603750909}
   buildingColor: {r: 0, g: 0, b: 0, a: 0}
   directions: []
-  direction: {x: 0, y: 0, z: 0}
-  leftDirection: {x: 0, y: 0, z: 0}
-  rightDirection: {x: 0, y: 0, z: 0}
-  mostLeftDirection: {x: 0, y: 0, z: 0}
-  mostRightDirection: {x: 0, y: 0, z: 0}
-  building: 0
-  fighters: []
+  buildingType: 0
+  targetID: 
+  BuildingID: 
   generatingCooldown: 1
   timeToGenerate: 1
-  timer: 0
-  totalTime: 100
-  spacing: 0.6
+  spacing: 0.1
   startFighter: 0
   maxCapacity: 0
   currentFighter: 0
   isGenerating: 0
   isMarching: 0
+  owned: 0
+  selected: 0
 --- !u!50 &603750913
 Rigidbody2D:
   serializedVersion: 4
@@ -488,12 +483,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 688695917}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a2854f16923a704694e7b706ccbe8c5, type: 3}
+  m_Script: {fileID: 11500000, guid: 25968ce39ec8ca94b90e05a288c2a28c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fighterPrefab: {fileID: 0}
   spriteRenderer: {fileID: 0}
-  owner: {fileID: 0}
-  stateColor: {r: 0, g: 0, b: 0, a: 0}
+  buildingColor: {r: 0, g: 0, b: 0, a: 0}
+  directions: []
+  buildingType: 1
+  targetID: 
+  BuildingID: 
+  generatingCooldown: 0
+  timeToGenerate: 0
+  spacing: 0
+  startFighter: 0
+  maxCapacity: 0
+  currentFighter: 0
+  isGenerating: 0
+  isMarching: 0
+  owned: 0
+  selected: 0
 --- !u!50 &688695919
 Rigidbody2D:
   serializedVersion: 4
@@ -502,7 +511,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 688695917}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -514,7 +523,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 3
 --- !u!58 &688695920
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -525,7 +534,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -594,7 +603,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.4756}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &695994038
 GameObject:
@@ -677,7 +686,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &695994041
 MonoBehaviour:
@@ -692,8 +701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 0}
-  owner: {fileID: 0}
-  stateColor: {r: 0, g: 0, b: 0, a: 0}
+  owner: {fileID: 603750907}
 --- !u!1 &1002398219
 GameObject:
   m_ObjectHideFlags: 0
@@ -722,7 +730,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1002398219}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -734,7 +742,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 3
 --- !u!58 &1002398222
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -745,7 +753,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -814,7 +822,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.4756}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1002398225
 MonoBehaviour:
@@ -832,23 +840,19 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   buildingColor: {r: 0, g: 0, b: 0, a: 0}
   directions: []
-  direction: {x: 0, y: 0, z: 0}
-  leftDirection: {x: 0, y: 0, z: 0}
-  rightDirection: {x: 0, y: 0, z: 0}
-  mostLeftDirection: {x: 0, y: 0, z: 0}
-  mostRightDirection: {x: 0, y: 0, z: 0}
-  building: 1
-  fighters: []
+  buildingType: 1
+  targetID: 
+  BuildingID: 
   generatingCooldown: 0
   timeToGenerate: 0
-  timer: 0
-  totalTime: 0
   spacing: 0
   startFighter: 0
   maxCapacity: 0
   currentFighter: 0
   isGenerating: 0
   isMarching: 0
+  owned: 0
+  selected: 0
 --- !u!1 &1055904989
 GameObject:
   m_ObjectHideFlags: 0
@@ -930,7 +934,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1055904992
 MonoBehaviour:
@@ -945,8 +949,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 0}
-  owner: {fileID: 0}
-  stateColor: {r: 0, g: 0, b: 0, a: 0}
+  owner: {fileID: 1174369429}
 --- !u!1 &1087594007
 GameObject:
   m_ObjectHideFlags: 0
@@ -983,23 +986,19 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   buildingColor: {r: 0, g: 0, b: 0, a: 0}
   directions: []
-  direction: {x: 0, y: 0, z: 0}
-  leftDirection: {x: 0, y: 0, z: 0}
-  rightDirection: {x: 0, y: 0, z: 0}
-  mostLeftDirection: {x: 0, y: 0, z: 0}
-  mostRightDirection: {x: 0, y: 0, z: 0}
-  building: 1
-  fighters: []
+  buildingType: 1
+  targetID: 
+  BuildingID: 
   generatingCooldown: 0
   timeToGenerate: 0
-  timer: 0
-  totalTime: 0
   spacing: 0
   startFighter: 0
   maxCapacity: 0
   currentFighter: 0
   isGenerating: 0
   isMarching: 0
+  owned: 0
+  selected: 0
 --- !u!50 &1087594009
 Rigidbody2D:
   serializedVersion: 4
@@ -1008,7 +1007,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1087594007}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -1020,7 +1019,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 3
 --- !u!58 &1087594010
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1031,7 +1030,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -1100,7 +1099,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.4756}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1174369429
 GameObject:
@@ -1138,23 +1137,19 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   buildingColor: {r: 0, g: 0, b: 0, a: 0}
   directions: []
-  direction: {x: 0, y: 0, z: 0}
-  leftDirection: {x: 0, y: 0, z: 0}
-  rightDirection: {x: 0, y: 0, z: 0}
-  mostLeftDirection: {x: 0, y: 0, z: 0}
-  mostRightDirection: {x: 0, y: 0, z: 0}
-  building: 1
-  fighters: []
+  buildingType: 1
+  targetID: 
+  BuildingID: 
   generatingCooldown: 0
   timeToGenerate: 0
-  timer: 0
-  totalTime: 0
   spacing: 0
   startFighter: 0
   maxCapacity: 0
   currentFighter: 0
   isGenerating: 0
   isMarching: 0
+  owned: 0
+  selected: 0
 --- !u!50 &1174369431
 Rigidbody2D:
   serializedVersion: 4
@@ -1163,7 +1158,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1174369429}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -1175,7 +1170,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 3
 --- !u!58 &1174369432
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1186,7 +1181,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -1255,7 +1250,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.4756}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1404378518
 GameObject:
@@ -1338,7 +1333,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1404378521
 MonoBehaviour:
@@ -1353,8 +1348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 0}
-  owner: {fileID: 0}
-  stateColor: {r: 0, g: 0, b: 0, a: 0}
+  owner: {fileID: 1610244138}
 --- !u!1 &1420486439
 GameObject:
   m_ObjectHideFlags: 0
@@ -1579,7 +1573,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1432246603
 MonoBehaviour:
@@ -1594,8 +1588,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 0}
-  owner: {fileID: 0}
-  stateColor: {r: 0, g: 0, b: 0, a: 0}
+  owner: {fileID: 688695917}
 --- !u!1 &1587802493
 GameObject:
   m_ObjectHideFlags: 0
@@ -1692,8 +1685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 0}
-  owner: {fileID: 0}
-  stateColor: {r: 0, g: 0, b: 0, a: 0}
+  owner: {fileID: 1087594007}
 --- !u!1 &1610244138
 GameObject:
   m_ObjectHideFlags: 0
@@ -1706,6 +1698,7 @@ GameObject:
   - component: {fileID: 1610244139}
   - component: {fileID: 1610244142}
   - component: {fileID: 1610244141}
+  - component: {fileID: 1610244143}
   m_Layer: 0
   m_Name: OpponentBuilding
   m_TagString: OpponentBuilding
@@ -1776,7 +1769,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.4756}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1610244141
 Rigidbody2D:
@@ -1786,7 +1779,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1610244138}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -1798,7 +1791,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 3
 --- !u!58 &1610244142
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1809,12 +1802,41 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.4
+--- !u!114 &1610244143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1610244138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 872abdf1816fb7b4cae7f9985bf9659b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fighterPrefab: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  buildingColor: {r: 0, g: 0, b: 0, a: 0}
+  directions: []
+  buildingType: 2
+  targetID: 
+  BuildingID: 
+  generatingCooldown: 0
+  timeToGenerate: 0
+  spacing: 0
+  startFighter: 0
+  maxCapacity: 0
+  currentFighter: 0
+  isGenerating: 0
+  isMarching: 0
+  owned: 0
+  selected: 0
 --- !u!1 &1857868453
 GameObject:
   m_ObjectHideFlags: 0
@@ -1911,8 +1933,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 0}
-  owner: {fileID: 0}
-  stateColor: {r: 0, g: 0, b: 0, a: 0}
+  owner: {fileID: 2088687037}
 --- !u!1 &2088687037
 GameObject:
   m_ObjectHideFlags: 0
@@ -1949,23 +1970,19 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   buildingColor: {r: 0, g: 0, b: 0, a: 0}
   directions: []
-  direction: {x: 0, y: 0, z: 0}
-  leftDirection: {x: 0, y: 0, z: 0}
-  rightDirection: {x: 0, y: 0, z: 0}
-  mostLeftDirection: {x: 0, y: 0, z: 0}
-  mostRightDirection: {x: 0, y: 0, z: 0}
-  building: 1
-  fighters: []
+  buildingType: 1
+  targetID: 
+  BuildingID: 
   generatingCooldown: 0
   timeToGenerate: 0
-  timer: 0
-  totalTime: 0
   spacing: 0
   startFighter: 0
   maxCapacity: 0
   currentFighter: 0
   isGenerating: 0
   isMarching: 0
+  owned: 0
+  selected: 0
 --- !u!50 &2088687039
 Rigidbody2D:
   serializedVersion: 4
@@ -1974,7 +1991,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2088687037}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -1986,7 +2003,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 3
 --- !u!58 &2088687040
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1997,7 +2014,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -2066,5 +2083,5 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.4756}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

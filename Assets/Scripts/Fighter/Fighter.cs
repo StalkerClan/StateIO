@@ -4,17 +4,27 @@ using UnityEngine;
 
 public abstract class Fighter : MonoBehaviour, IInitializeVariables
 {
-    public GameObject fighterHolder;
     public Rigidbody2D rb;
+
+    public Building buildingOwner;
     public GlobalVariables.Fighter fighter;
+
     public Vector3[] positions;
     private Vector3 moveDirection;
+
+    public string targetID;
+
     public float moveSpeed;
-    private bool moving = false;
+
     private int positionIndex;
+
+    private bool moving = false;
+
 
     public Vector2 MoveDirection { get => moveDirection; set => moveDirection = value; }
     public Vector3[] Positions { get => positions; set => positions = value; }
+    public Building BuildingOwner { get => buildingOwner; set => buildingOwner = value; }
+    public string TargetID { get => targetID; set => targetID = value; }
 
     public void InitializeVariables()
     {
@@ -43,7 +53,7 @@ public abstract class Fighter : MonoBehaviour, IInitializeVariables
         moving = true;
     }
 
-    public void Marching()
+    public void CheckCurrentPosition()
     {
         if (moving)
         {
