@@ -3,136 +3,146 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Building : MonoBehaviour, IInitializeVariables, IReceiver, ISubcriber
+public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiver
 {
-    public event Action<Building> OnChangingOnwer = delegate { };
-    public event Action<int> OnChangingNumberOfFighters = delegate { };
-
-    public class Point
+    public class VectorSet
     {
-        public Vector3 middlePoint;
-        public Vector3 leftPoint;
-        public Vector3 rightPoint;
-        public Vector3 mostLeftPoint;
-        public Vector3 mostRightPoint;
+        public List<Vector3> startPositions;
+        public List<Vector3> fighterDirections;
+
+        public VectorSet(List<Vector3> newStartPositions, List<Vector3> newFighterDirections)
+        {
+            startPositions = newStartPositions;
+            fighterDirections = newFighterDirections;
+        }
     }
 
-    [SerializeField] private BuildingStats buildingStats;
+    public event Action<Owner> OnChangingOnwer = delegate { };
+    public event Action<int> OnChangingNumberOfFighters = delegate { };
+
+
+    [SerializeField] private Owner buildingOwner;
 
     [SerializeField] private GameObject fighterPrefab;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
     [SerializeField] private Color buildingColor;
-    [SerializeField] private Color firstColor;
-    [SerializeField] private Color secondColor;
 
-    protected List<Vector3[]> listOfPositions;
-    protected List<Vector3> directions;
-    protected List<Vector3> fighterStartPositions;
-    protected Vector3 direction;
-    protected Vector3 targetPosition;
+    [SerializeField] private GlobalVariables.Owner ownerType;
 
-    [SerializeField] private GlobalVariables.Building buildingType;
-    protected Point pointsNearTarget;
-    protected Point startPositions;
-    protected FighterPosition fighterPosition;
-    protected FighterDirection fighterDirection;
+    private Dictionary<string, VectorSet> directionDictionary;
 
-    [SerializeField] protected string targetID;
-    [SerializeField] protected string buildingID;
+    [SerializeField] private List<Building> nearbyBuildings;
+
+    [SerializeField] private string buildingID;
 
     [SerializeField] private float timeToGenerate;
     [SerializeField] private float initializingDelay;
-    protected float degree;
-    protected float timeSinceGenerated;
-    protected float totalTime;  
-    protected float spacing;
+    [SerializeField] private float generatingDelay;
+    [SerializeField] private float multiplier;
+    [SerializeField] private float radiusCheck;
+    private float degree;
+    private float timeSinceGenerated;
+    private float spacing;
    
     [SerializeField] private int startFighter;
     [SerializeField] private int maxCapacity;
     [SerializeField] private int currentFighter;
     protected int lineCapacity;
 
-    [SerializeField] protected bool isGenerating;
-    [SerializeField] protected bool owned;
-    [SerializeField] protected bool taken;
-    [SerializeField] protected bool selected;
-    [SerializeField] protected bool isMarching;
+    [SerializeField] private bool isGenerating;
+    [SerializeField] private bool owned;
+    [SerializeField] private bool taken;
+    [SerializeField] private bool isMarching;
 
-    public BuildingStats BuildingStats { get => buildingStats; set => buildingStats = value; }
+    public Owner BuildingOwner { get => buildingOwner; set => buildingOwner = value; }
     public GameObject FighterPrefab { get => fighterPrefab; set => fighterPrefab = value; }
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; set => spriteRenderer = value; }
-
     public Color BuildingColor { get => buildingColor; set => buildingColor = value; }
-    public Color FirstColor { get => firstColor; set => firstColor = value; }  
-    public Color SecondColor { get => secondColor; set => secondColor = value; }  
-
-    public FighterPosition FighterDirection { get => fighterPosition; set => fighterPosition = value; }
-    public GlobalVariables.Building BuildingType { get => buildingType; }
-
+    public GlobalVariables.Owner OwnerType { get => ownerType; set => ownerType = value; }
+    public List<Building> NearbyBuildings { get => nearbyBuildings; set => nearbyBuildings = value; }
     public string BuildingID { get => buildingID; set => buildingID = value; }
-
     public float TimeToGenerate { get => timeToGenerate; set => timeToGenerate = value; }
-
+    public float RadiusCheck { get => radiusCheck; set => radiusCheck = value; }
     public int MaxCapacity { get => maxCapacity; set => maxCapacity = value; }
     public int CurrentFighter { get => currentFighter; set => currentFighter = value; }
-
     public bool Owned { get => owned; set => owned = value; }
     public bool Taken { get => taken; set => taken = value; }
-    public bool Selected { get => selected; set => selected = value; }
 
-    public virtual void SubcribeEvent()
+    private void Start()
     {
-
+        InitializeVariables();
+        GetOwnerType();
+        SubcribeEvent();
     }
 
-    public virtual void UnsubcribeEvent()
+    private void OnDisable()
     {
+        UnsubcribeEvent();
+    }
 
+    private void Update()
+    {
+        GenerateFighter();
+        if (!isMarching)
+        {
+            CancelInvoke("InitializeFighter");
+        }
+    }
+
+    public void SubcribeEvent()
+    {
+        OnChangingNumberOfFighters += ChangeNumberOfFighter;
+    }
+
+    public void UnsubcribeEvent()
+    {
+        OnChangingNumberOfFighters -= ChangeNumberOfFighter;
     }
 
     public void InitializeVariables()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        listOfPositions = new List<Vector3[]>();
-        directions = new List<Vector3>();
-        fighterStartPositions = new List<Vector3>();
-        spacing = 0.08f;
+    {      
+        directionDictionary = new Dictionary<string, VectorSet>();    
+        spacing = 0.12f;
+        multiplier = 2f;
         degree = 100f;
         initializingDelay = 0.4f;
-        currentFighter = buildingStats.startFighter;
+        generatingDelay = 1.5f;
+        radiusCheck = 4f;
+        startFighter = buildingOwner.OwnerStat.startFighter;
+        currentFighter = startFighter;
         isGenerating = true;
         isMarching = false;
     }
 
-    public void GetBuildingStats(Building owner)
+    public void GetBuildingStats(Owner owner)
     {
-        buildingStats = owner.BuildingStats;
-        fighterPrefab = owner.FighterPrefab;
-        spriteRenderer.sprite = owner.buildingStats.avatar;
-        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(owner.buildingStats.colorSet.keyColor));
-        firstColor = Utilities.HexToColor(Utilities.ColorToHex(owner.buildingStats.colorSet.firstColor));
-        secondColor = Utilities.HexToColor(Utilities.ColorToHex(owner.buildingStats.colorSet.secondColor));
-        buildingType = owner.BuildingType;
-        spriteRenderer.color = owner.buildingColor;
-        timeToGenerate = owner.buildingStats.timeToGenerate;
-        startFighter = owner.buildingStats.startFighter;
-        maxCapacity = owner.buildingStats.maxCapacity;     
+        this.buildingOwner = owner;
+        if (owner.FighterPrefab != null)
+        {
+            fighterPrefab = owner.FighterPrefab;
+        }
+        spriteRenderer.sprite = owner.OwnerStat.buildingIcon;
+        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.colorSet.keyColor));
+        ownerType = owner.OwnerType;
+        spriteRenderer.color = buildingColor;
+        timeToGenerate = owner.OwnerStat.timeToGenerate;
+        maxCapacity = owner.OwnerStat.maxCapacity;     
     }
 
-    public void GetBuildingType()
+    public void GetOwnerType()
     {
-        switch (buildingType)
+        switch (ownerType)
         {
-            case GlobalVariables.Building.Player:
+            case GlobalVariables.Owner.Player:
                 owned = true;
                 taken = false;
                 break;
-            case GlobalVariables.Building.Neutral:
+            case GlobalVariables.Owner.Neutral:
                 owned = false;
                 taken = false;
                 break;
-            case GlobalVariables.Building.Opponent:
+            case GlobalVariables.Owner.Enemy:
                 owned = false;
                 taken = true;
                 break;
@@ -172,10 +182,10 @@ public abstract class Building : MonoBehaviour, IInitializeVariables, IReceiver,
     }
 
     //Nhan Fighter tu cac building khac
-    public void ReceiveFighter(int fighter, Building buildingOwner)
+    public void ReceiveFighter(int fighter, Owner invader)
     {
-        GlobalVariables.Building invader = buildingOwner.BuildingType;
-        if (buildingType.Equals(invader))
+        GlobalVariables.Owner invaderType = invader.OwnerType;
+        if (ownerType.Equals(invaderType))
         {
             OnChangingNumberOfFighters?.Invoke(fighter);
         }
@@ -183,20 +193,25 @@ public abstract class Building : MonoBehaviour, IInitializeVariables, IReceiver,
         {
             if (currentFighter <= 0)
             {      
-                if (buildingOwner.BuildingType.Equals(GlobalVariables.Building.Player))
+                if (invader.OwnerType.Equals(GlobalVariables.Owner.Player))
                 {
                     owned = true;
                     taken = false;
-                    LevelManager.Instance.PlayerBuilding -= 8;
-                    
+                    LevelManager.Instance.PlayerBuilding++;
+
                 }
-                else if (buildingOwner.BuildingType.Equals(GlobalVariables.Building.Opponent))
+                else if (invader.OwnerType.Equals(GlobalVariables.Owner.Enemy))
                 {
                     owned = false;
                     taken = true;
-                    LevelManager.Instance.PlayerBuilding--;
+                    if (this.OwnerType.Equals(GlobalVariables.Owner.Player))
+                    {
+                        LevelManager.Instance.PlayerBuilding--;
+                    }
                 }
-                OnChangingOnwer?.Invoke(buildingOwner);
+                OnChangingOnwer?.Invoke(invader);
+                this.buildingOwner.RemoveBuilding(this);
+                invader.AddBuilding(this);
                 LevelManager.Instance.CheckPlayerOwnedBuilding();                 
             }
             else
@@ -209,25 +224,29 @@ public abstract class Building : MonoBehaviour, IInitializeVariables, IReceiver,
 
     public void FighterMarching(string currentTargetID, Vector3 currentTargetPosition)
     {
-        if (selected)
+        isMarching = true;
+        Vector3 direction = (currentTargetPosition - this.transform.position).normalized;
+
+        if (directionDictionary.TryGetValue(currentTargetID, out VectorSet existedfighterDirecions))
         {
-            this.targetID = currentTargetID;
-            this.targetPosition = currentTargetPosition;
-            direction = (targetPosition - this.transform.position).normalized;
-            GetPointNearTarget();
-            GetMarchDirectionByTargetPosition();
-            FormArcFormation();
-            isMarching = true;
-            isGenerating = false;
-            InvokeRepeating(nameof(InitializeFighter), 0f, initializingDelay);
+            StartCoroutine(DelayMarching(currentTargetID, existedfighterDirecions));
         }
-        selected = false;
+        else
+        {
+            VectorSet vectorSet = GetVectorSet(currentTargetPosition);
+            StartCoroutine(DelayMarching(currentTargetID, vectorSet));
+            directionDictionary.Add(currentTargetID, vectorSet);
+        }
     }
 
-    public void FormArcFormation()
+    public VectorSet GetVectorSet(Vector3 targetPosition)
     {
-        fighterStartPositions.Clear();
+        List<Vector3> tempStartPositions = new List<Vector3>();
+        List<Vector3> tempFighterDirections = new List<Vector3>();
 
+        Vector3 direction = (targetPosition - this.transform.position).normalized;
+
+        //Form arc formation
         Vector3 leftVector = Helpers.VectorByRotateAngle(degree, direction);
         Vector3 rightVector = Helpers.VectorByRotateAngle(360 - degree, direction);
 
@@ -237,125 +256,87 @@ public abstract class Building : MonoBehaviour, IInitializeVariables, IReceiver,
         Vector3 leftPoint = Vector3.Lerp(this.transform.position, mostLeftPoint, 0.5f);
         Vector3 rightPoint = Vector3.Lerp(this.transform.position, mostRightPoint, 0.5f);
 
-        fighterStartPositions.Add(middlePoint);
-        fighterStartPositions.Add(leftPoint);
-        fighterStartPositions.Add(rightPoint);
-        fighterStartPositions.Add(mostLeftPoint);
-        fighterStartPositions.Add(mostRightPoint);
-    }
+        tempStartPositions.Add(middlePoint);
+        tempStartPositions.Add(leftPoint);
+        tempStartPositions.Add(rightPoint);
+        tempStartPositions.Add(mostLeftPoint);
+        tempStartPositions.Add(mostRightPoint);
 
-    public void GetPointToFormQuadraticCurve()
-    {
-        direction = (this.targetPosition - this.transform.position).normalized;
-
-        Vector3 leftVector = Helpers.PerpendicularCounterClockwise(direction);
-        Vector3 rightVector = Helpers.PerpendicularClockwise(direction);
-
-        pointsNearTarget = new Point
-        {
-            middlePoint = Vector3.Lerp(this.transform.position, this.targetPosition, 0.9f)
-        };
-
-        pointsNearTarget.leftPoint = pointsNearTarget.middlePoint + (spacing * leftVector);
-        pointsNearTarget.rightPoint = pointsNearTarget.middlePoint + (spacing *rightVector);
-        pointsNearTarget.mostLeftPoint = pointsNearTarget.middlePoint + (1.5f * spacing * leftVector);
-        pointsNearTarget.mostRightPoint = pointsNearTarget.middlePoint + (1.5f * spacing * rightVector);
-    }
-
-    public void GetMarchPositionByBerzierCurve()
-    {
-        listOfPositions.Clear();
-
-        fighterPosition = new FighterPosition
-        {
-            MiddlePositions = Curve.GetQuadraticBezierCurve(this.totalTime, this.transform.position, pointsNearTarget.middlePoint, this.targetPosition),
-            LeftPositions = Curve.GetQuadraticBezierCurve(this.totalTime, this.transform.position, pointsNearTarget.leftPoint, this.targetPosition),
-            RightPositions = Curve.GetQuadraticBezierCurve(this.totalTime, this.transform.position, pointsNearTarget.rightPoint, this.targetPosition),
-            MostLeftPositions = Curve.GetQuadraticBezierCurve(this.totalTime, this.transform.position, pointsNearTarget.mostLeftPoint, this.targetPosition),
-            MostRightPositions = Curve.GetQuadraticBezierCurve(this.totalTime, this.transform.position, pointsNearTarget.mostRightPoint, this.targetPosition)
-        };
-
-        listOfPositions.Add(fighterPosition.MiddlePositions);
-        listOfPositions.Add(fighterPosition.LeftPositions);
-        listOfPositions.Add(fighterPosition.RightPositions);
-        listOfPositions.Add(fighterPosition.MostLeftPositions);
-        listOfPositions.Add(fighterPosition.MostRightPositions);
-    }
-
-    public void GetPointNearTarget()
-    {
+        //Get points near target
         Vector3 oppositeDirection = -direction;
-        Vector3 leftVector = Helpers.VectorByRotateAngle(360 - 70, oppositeDirection); 
-        Vector3 rightVector = Helpers.VectorByRotateAngle(70, oppositeDirection);
-        
-        pointsNearTarget = new Point
-        {
-            middlePoint = targetPosition,
-            leftPoint = targetPosition + (spacing * leftVector),
-            rightPoint = targetPosition + (spacing * rightVector),
-            mostLeftPoint = targetPosition + (2f * spacing * leftVector),
-            mostRightPoint = targetPosition + (2f * spacing * rightVector),
-        };
+        Vector3 leftVectorNearTarget = Helpers.VectorByRotateAngle(360 - 70, oppositeDirection);
+        Vector3 rightVectorNearTarget = Helpers.VectorByRotateAngle(70, oppositeDirection);
+
+        Vector3 middlePointNearTarget = targetPosition;
+        Vector3 leftPointNearTarget = targetPosition + (spacing * leftVectorNearTarget);
+        Vector3 rightPointNearTarget = targetPosition + (spacing * rightVectorNearTarget);
+        Vector3 mostLeftPointNearTarget = targetPosition + (multiplier * spacing * leftVectorNearTarget);
+        Vector3 mostRightPointNearTarget = targetPosition + (multiplier * spacing * rightVectorNearTarget);
+
+        //Get directions 
+        Vector3 middleDirection = direction;
+        Vector3 leftDirection = (leftPointNearTarget - this.transform.position).normalized;
+        Vector3 rightDirection = (rightPointNearTarget - this.transform.position).normalized;
+        Vector3 mostLeftDirection = (mostLeftPointNearTarget - this.transform.position).normalized;
+        Vector3 mostRightDirection = (mostRightPointNearTarget - this.transform.position).normalized;
+
+        tempFighterDirections.Add(middleDirection);
+        tempFighterDirections.Add(leftDirection);
+        tempFighterDirections.Add(rightDirection);
+        tempFighterDirections.Add(mostLeftDirection);
+        tempFighterDirections.Add(mostRightDirection);
+
+        return new VectorSet(tempStartPositions, tempFighterDirections);
     }
 
-    public void GetMarchDirectionByTargetPosition()
-    {
-        directions.Clear();
-
-        fighterDirection = new FighterDirection
-        {
-            MiddleDirection = direction,
-            LeftDirection = (pointsNearTarget.leftPoint - this.transform.position).normalized,
-            RightDirection = (pointsNearTarget.rightPoint - this.transform.position).normalized,
-            MostLeftDirection = (pointsNearTarget.mostLeftPoint - this.transform.position).normalized,
-            MostRightDirection = (pointsNearTarget.mostRightPoint - this.transform.position).normalized,
-        };
-
-        directions.Add(fighterDirection.MiddleDirection);
-        directions.Add(fighterDirection.LeftDirection);
-        directions.Add(fighterDirection.RightDirection);
-        directions.Add(fighterDirection.MostLeftDirection);
-        directions.Add(fighterDirection.MostRightDirection);
-    }
-
-    public void InitializeFighter()
-    {
+    public void InitializeFighter(string currentTargetID, VectorSet fighterDirections)
+    {      
         lineCapacity = currentFighter > 5 ? lineCapacity = 5 : lineCapacity = currentFighter;
       
         if (currentFighter > 5)
         {
             for (int i = 0; i < lineCapacity; i++)
             {
-                GetFighterFromPool(i);       
+                GetFighterFromPool(i, currentTargetID, fighterDirections);       
             }
-            OnChangingNumberOfFighters(-5);
+            OnChangingNumberOfFighters?.Invoke(-5);
         }
         else
         {
             for (int i = 0; i < lineCapacity; i++)
             {
-                GetFighterFromPool(i);
+                GetFighterFromPool(i, currentTargetID, fighterDirections);
             }
-            OnChangingNumberOfFighters(-1 * currentFighter);
+            OnChangingNumberOfFighters?.Invoke(-1 * currentFighter);          
             isMarching = false;
             StartCoroutine(DelayGenerating());
         }
     }
 
-    public void GetFighterFromPool(int index)
+    public void GetFighterFromPool(int index, string targetID, VectorSet fighterDirections)
     {
         GameObject newFighter = ObjectPooler.Instance.GetObject(fighterPrefab);
-        Fighter fighterStats = newFighter.GetComponent<Fighter>();
-        newFighter.transform.position = fighterStartPositions[index];
-        fighterStats.SpriteRenderer.color = buildingColor;
-        fighterStats.BuildingOwner = this;
-        fighterStats.TargetID = this.targetID;
-        fighterStats.MoveDirection = directions[index];
+        Fighter fighterStat = newFighter.GetComponent<Fighter>();
+        newFighter.transform.position = fighterDirections.startPositions[index];
+        fighterStat.SpriteRenderer.color = buildingColor;
+        fighterStat.Owner = buildingOwner;
+        fighterStat.TargetID = targetID;
+        fighterStat.MoveDirection = fighterDirections.fighterDirections[index];
+    }
+
+    IEnumerator DelayMarching(string currentTargetID, VectorSet fighterDirections)
+    {
+        WaitForSeconds delayMarchcing = Utilities.GetWaitForSeconds(initializingDelay);
+        while(isMarching)
+        {
+            InitializeFighter(currentTargetID, fighterDirections);
+            yield return delayMarchcing;
+        }       
     }
 
     IEnumerator DelayGenerating()
     {
-        WaitForSeconds delayGenerating = Utilities.GetWaitForSeconds(0.6f);
+        WaitForSeconds delayGenerating = Utilities.GetWaitForSeconds(generatingDelay);
         yield return delayGenerating;
 
         isGenerating = true;

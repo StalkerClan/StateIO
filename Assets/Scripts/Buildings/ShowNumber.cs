@@ -8,7 +8,6 @@ public class ShowNumber : MonoBehaviour, ISubcriber
 
     private void Start()
     {
-        textMesh = GetComponent<TextMesh>();
         ShowNumberOfFighter(building.CurrentFighter);
         SubcribeEvent();
     }
@@ -22,7 +21,6 @@ public class ShowNumber : MonoBehaviour, ISubcriber
     {
         building.OnChangingNumberOfFighters += ShowNumberOfFighter;
     }
-
 
     public void UnsubcribeEvent()
     {

@@ -45,3 +45,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Building
+    uniqueID: 111379161
+    locked: 0
+  - name: Fighter
+    uniqueID: 2372876957
+    locked: 0

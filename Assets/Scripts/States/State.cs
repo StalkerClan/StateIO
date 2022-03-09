@@ -4,7 +4,8 @@ using UnityEngine;
 public class State : MonoBehaviour, IInitializeVariables, ISubcriber
 {
     public SpriteRenderer spriteRenderer;
-    public Building owner;
+    public Building building;
+    public Owner stateOwner;
 
     public Color currentColor;
     public Color firstColor;
@@ -18,8 +19,8 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
     private void Start()
     {
         InitializeVariables();
-        SetOwner(owner);
-        SetStateName(owner);
+        SetOwner(stateOwner);
+        SetStateName(building);
         SubcribeEvent();
     }
 
@@ -29,33 +30,35 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
     }
     public void SubcribeEvent()
     {
-        owner.OnChangingOnwer += SetOwner;
+        building.OnChangingOnwer += SetOwner;
     }
 
     public void UnsubcribeEvent()
     {
-        owner.OnChangingOnwer -= SetOwner;
+        building.OnChangingOnwer -= SetOwner;
     }
 
     public void InitializeVariables()
     {
-        owner = owner.GetComponent<Building>();
+        building = GetComponentInChildren<Building>();
+        stateOwner = building.BuildingOwner;
     }
 
-    private void SetStateName(Building owner)
+    private void SetStateName(Building building)
     {
         stateName = spriteRenderer.sprite.name;
         stateName = stateName.Remove(0, 3);
         stateName = char.ToUpper(stateName[0]) + stateName.Substring(1);
         this.gameObject.name = stateName + "State";
-        owner.gameObject.name = owner.BuildingID = stateName + "Building";
+        building.gameObject.name = building.BuildingID = stateName + "Building";
     }
 
-    public void SetOwner(Building owner)
+    public void SetOwner(Owner owner)
     {
-        firstColor = owner.FirstColor;
-        secondColor = owner.SecondColor;
-        buildingMaxCapacity = owner.MaxCapacity;
+        stateOwner = owner;
+        firstColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.colorSet.firstColor));
+        secondColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.colorSet.secondColor));
+        buildingMaxCapacity = building.MaxCapacity;
         float percent = currentFighter / buildingMaxCapacity;
         currentColor = Color.Lerp(firstColor, secondColor, percent);
         spriteRenderer.color = currentColor;
@@ -63,8 +66,8 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
 
     public void ChangeColorOverTime()
     {              
-        currentFighter = owner.CurrentFighter;
-        buildingMaxCapacity = owner.MaxCapacity;
+        currentFighter = building.CurrentFighter;
+        buildingMaxCapacity = building.MaxCapacity;
         float percent = currentFighter / buildingMaxCapacity;
         currentColor = Color.Lerp(firstColor, secondColor, percent);
         spriteRenderer.color = currentColor;

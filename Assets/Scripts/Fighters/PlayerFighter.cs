@@ -8,11 +8,11 @@ public class PlayerFighter : Fighter
     }
     public override void InitializeVariables()
     {
-        defaultMoveSpeed = 4f;
+        defaultMoveSpeed = owner.OwnerStat.defaultMoveSpeed;
         moveSpeed = defaultMoveSpeed;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Move();
     }
@@ -36,17 +36,16 @@ public class PlayerFighter : Fighter
                 IReceiver receiver = collision.GetComponent<IReceiver>();
                 if (receiver != null)
                 {
-                    receiver.ReceiveFighter(1, this.buildingOwner);
+                    receiver.ReceiveFighter(1, owner);
                     DeSpawn();
                 }
             }
-        }    
-    }
+        }
 
-    private void DeSpawn()
-    {
-        moveDirection = Vector3.zero;
-        moveSpeed = defaultMoveSpeed;
-        ObjectPooler.Instance.ReturnGameObject(this.gameObject);
+        if (collision.TryGetComponent(out EnemyFighter enemyFighter))
+        {
+            DeSpawn();
+            enemyFighter.DeSpawn();
+        }
     }
 }

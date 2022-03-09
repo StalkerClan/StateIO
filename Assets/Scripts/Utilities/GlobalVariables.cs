@@ -6,23 +6,16 @@ public static class GlobalVariables
     public static readonly string NEUTRAL_BUILDING_TAG = "NeutralBuilding";
     public static readonly string OPPONENT_BUILDING_TAG = "OpponentBuilding";
 
-    public enum Building
-    {
-        Player,
-        Neutral,
-        Opponent,
-    }
-
     public enum Fighter
     {
         Player,
-        Opponent,
+        Enemy,
     }
 
     public enum Owner
     {
         Player,
-        None,
-        Opponent,
+        Neutral,
+        Enemy,
     }
 }
