@@ -20,7 +20,11 @@ public abstract class Fighter : MonoBehaviour, IInitializeVariables
     public Vector3 MoveDirection { get => moveDirection; set => moveDirection = value; }
     public string TargetID { get => targetID; set => targetID = value; }
 
-    public abstract void InitializeVariables();
+    public void InitializeVariables()
+    {
+        defaultMoveSpeed = owner.OwnerStat.defaultMoveSpeed;
+        moveSpeed = defaultMoveSpeed;
+    }
 
     public void Move()
     {

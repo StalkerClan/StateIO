@@ -103,7 +103,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     public void InitializeVariables()
     {      
         directionDictionary = new Dictionary<string, VectorSet>();    
-        spacing = 0.12f;
+        spacing = 0.13f;
         multiplier = 2f;
         degree = 100f;
         initializingDelay = 0.4f;
@@ -253,8 +253,8 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         Vector3 middlePoint = this.transform.position;
         Vector3 mostLeftPoint = this.transform.position + (spacing * leftVector);
         Vector3 mostRightPoint = this.transform.position + (spacing * rightVector);
-        Vector3 leftPoint = Vector3.Lerp(this.transform.position, mostLeftPoint, 0.5f);
-        Vector3 rightPoint = Vector3.Lerp(this.transform.position, mostRightPoint, 0.5f);
+        Vector3 leftPoint = Vector3.Lerp(this.transform.position, mostLeftPoint, 0.6f);
+        Vector3 rightPoint = Vector3.Lerp(this.transform.position, mostRightPoint, 0.6f);
 
         tempStartPositions.Add(middlePoint);
         tempStartPositions.Add(leftPoint);

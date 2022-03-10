@@ -5,6 +5,6 @@ public abstract class EnemyBaseState
 {
     public abstract void EnterState(EnemyStateManager enemyStateManager);
 
-    public abstract void UpdateState(EnemyStateManager enemyStateManager, List<Building> buildings);
+    public abstract void UpdateState(EnemyStateManager enemyStateManager, HashSet<Building> buildings);
 
 }

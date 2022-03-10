@@ -81,11 +81,13 @@ public class PlayerInput : Singleton<PlayerInput>
         }
         #endregion
 
+#if UNITY_EDITOR
         #region Touch
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-                       
+            if (Input.GetTouch(0).phase == TouchPhase.Moved)
+            {
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(touch.position), Vector2.zero);
                 if (hit.collider != null)
                 {
@@ -108,9 +110,11 @@ public class PlayerInput : Singleton<PlayerInput>
                     else return;
                 }
                 else return;
+            }          
 
             if (Input.GetTouch(0).phase == TouchPhase.Canceled)
             {
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(touch.position), Vector2.zero);
                 if (hit.collider != null)
                 {
                     if (hit.transform.gameObject.TryGetComponent(out Building building))
@@ -125,9 +129,8 @@ public class PlayerInput : Singleton<PlayerInput>
                 else Reset();
             }
         }
-
-            
         #endregion
+#endif
     }
 
     public void Reset()

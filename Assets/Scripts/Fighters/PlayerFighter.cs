@@ -6,11 +6,6 @@ public class PlayerFighter : Fighter
     {
         InitializeVariables();
     }
-    public override void InitializeVariables()
-    {
-        defaultMoveSpeed = owner.OwnerStat.defaultMoveSpeed;
-        moveSpeed = defaultMoveSpeed;
-    }
 
     private void FixedUpdate()
     {

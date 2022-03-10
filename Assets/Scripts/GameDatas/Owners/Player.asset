@@ -17,7 +17,7 @@ MonoBehaviour:
   timeToGenerate: 1
   startFighter: 10
   maxCapacity: 50
-  gold: 0
-  defaultMoveSpeed: 0.6
+  currency: 0
+  defaultMoveSpeed: 0.8
   buildingIcon: {fileID: 21300000, guid: 75e7fc89f6f5792448bdd3a330171255, type: 3}
   fighterIcon: {fileID: 21300000, guid: f3a2d8a65ec7d57449b4b6597e930160, type: 3}

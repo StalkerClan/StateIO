@@ -8,7 +8,7 @@ public class IdleState : EnemyBaseState
 
     }
 
-    public override void UpdateState(EnemyStateManager enemyStateManager, List<Building> buildings)
+    public override void UpdateState(EnemyStateManager enemyStateManager, HashSet<Building> buildings)
     {
         foreach (Building building in buildings)
         {

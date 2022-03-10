@@ -22,7 +22,6 @@ public class LevelManager : Singleton<LevelManager>
         } 
         else if (playerBuilding <= 0)
         {
-            Debug.Log("haha");
             GameManager.Instance.SwitchState(GameManager.Instance.GameOverState);
         }
     }
