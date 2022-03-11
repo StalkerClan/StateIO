@@ -160,6 +160,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         GetOwnerType(owerType);
         InitializeVariables();
         OnChangingNumberOfFighters?.Invoke(defaultOwner.ownerStat.startFighter);
+        OnChangingOnwer?.Invoke(defaultOwner);
     }
 
     public void ChangeBuildingColor(ColorSet newColorSet)
