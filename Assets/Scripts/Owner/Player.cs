@@ -14,5 +14,5 @@ public class Player : Owner
     private void OnDisable()
     {
 
-    } 
+    }
 }

@@ -14,6 +14,7 @@ public class PlayerInput : Singleton<PlayerInput>
 
     public float selectRange;
 
+    private bool marched;
 
     public List<Building> selectedBuildings;
     private HashSet<Building> hashSetSelectedBuildings;
@@ -22,13 +23,13 @@ public class PlayerInput : Singleton<PlayerInput>
     public Vector3 TargetPosition { get => targetPosition; set => targetPosition = value; }
     public Vector3 Direction { get => direction; set => direction = value; }
     public string TargetID { get => targetID; }
-
-
+    public bool Marched { get => marched; set => marched = value; }
 
     private void Awake()
     {
         hashSetSelectedBuildings = new HashSet<Building>(selectedBuildings);
         selectRange = 0.22f;
+        marched = false;
     }
 
     public void SelectTarget()
@@ -72,7 +73,8 @@ public class PlayerInput : Singleton<PlayerInput>
                     foreach (Building selectedBuilding in hashSetSelectedBuildings)
                     {
                         selectedBuilding.FighterMarching(targetID, targetPosition);
-                    }                  
+                    }
+                    marched = true;
                     Reset();
                 }
                 else Reset();
@@ -121,7 +123,11 @@ public class PlayerInput : Singleton<PlayerInput>
                     {
                         targetPosition = hit.transform.gameObject.transform.position;
                         targetID = building.BuildingID;
-                        OnSelectedTarget?.Invoke(targetID, targetPosition);
+                        foreach (Building selectedBuilding in hashSetSelectedBuildings)
+                        {
+                            selectedBuilding.FighterMarching(targetID, targetPosition);
+                        }
+                        marched = true;
                         Reset();
                     }
                     else Reset();

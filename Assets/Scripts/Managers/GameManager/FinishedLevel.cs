@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class GameOverState : GameState
+public class FinishedLevel : BaseGameState
 {
     public override void EnterState(GameManager gameManager)
     {
-        Debug.Log("GameOver");
+        Debug.Log("FinishedLevel");
     }
 
     public override void UpdateState(GameManager gameManager)

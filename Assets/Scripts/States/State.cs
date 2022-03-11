@@ -24,18 +24,25 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
         SubcribeEvent();
     }
 
+    private void Update()
+    {
+        ChangeColorOverTime();
+    }
+
     private void OnDisable()
     {
         UnsubcribeEvent();
     }
     public void SubcribeEvent()
-    {
+    {      
         building.OnChangingOnwer += SetOwner;
+        stateOwner.OnChangingColorSet += ChangeStateColor;
     }
 
     public void UnsubcribeEvent()
     {
         building.OnChangingOnwer -= SetOwner;
+        stateOwner.OnChangingColorSet += ChangeStateColor;
     }
 
     public void InitializeVariables()
@@ -64,6 +71,16 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
         spriteRenderer.color = currentColor;
     }
 
+    public void ChangeStateColor(ColorSet newColorSet)
+    {
+        firstColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.firstColor));
+        secondColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.secondColor));
+        buildingMaxCapacity = building.MaxCapacity;
+        float percent = currentFighter / buildingMaxCapacity;
+        currentColor = Color.Lerp(firstColor, secondColor, percent);
+        spriteRenderer.color = currentColor;
+    }
+
     public void ChangeColorOverTime()
     {              
         currentFighter = building.CurrentFighter;
@@ -72,9 +89,5 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
         currentColor = Color.Lerp(firstColor, secondColor, percent);
         spriteRenderer.color = currentColor;
     }
-
-    private void Update()
-    {
-        ChangeColorOverTime();        
-    }
+  
 }

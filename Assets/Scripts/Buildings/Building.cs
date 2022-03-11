@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiver
 {
+
     public class VectorSet
     {
         public List<Vector3> startPositions;
@@ -20,8 +21,8 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     public event Action<Owner> OnChangingOnwer = delegate { };
     public event Action<int> OnChangingNumberOfFighters = delegate { };
 
-
     [SerializeField] private Owner buildingOwner;
+    [SerializeField] private Owner defaultOwner;
 
     [SerializeField] private GameObject fighterPrefab;
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -29,6 +30,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     [SerializeField] private Color buildingColor;
 
     [SerializeField] private GlobalVariables.Owner ownerType;
+    [SerializeField] private GlobalVariables.Owner defaultOwnerType;
 
     private Dictionary<string, VectorSet> directionDictionary;
 
@@ -40,7 +42,6 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     [SerializeField] private float initializingDelay;
     [SerializeField] private float generatingDelay;
     [SerializeField] private float multiplier;
-    [SerializeField] private float radiusCheck;
     private float degree;
     private float timeSinceGenerated;
     private float spacing;
@@ -56,23 +57,28 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     [SerializeField] private bool isMarching;
 
     public Owner BuildingOwner { get => buildingOwner; set => buildingOwner = value; }
+    public Owner DefaultOwner { get => defaultOwner; set => defaultOwner = value; }
     public GameObject FighterPrefab { get => fighterPrefab; set => fighterPrefab = value; }
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; set => spriteRenderer = value; }
     public Color BuildingColor { get => buildingColor; set => buildingColor = value; }
     public GlobalVariables.Owner OwnerType { get => ownerType; set => ownerType = value; }
+    public GlobalVariables.Owner DefaultOwnerType { get => defaultOwnerType; set => defaultOwnerType = value; }
     public List<Building> NearbyBuildings { get => nearbyBuildings; set => nearbyBuildings = value; }
     public string BuildingID { get => buildingID; set => buildingID = value; }
     public float TimeToGenerate { get => timeToGenerate; set => timeToGenerate = value; }
-    public float RadiusCheck { get => radiusCheck; set => radiusCheck = value; }
     public int MaxCapacity { get => maxCapacity; set => maxCapacity = value; }
     public int CurrentFighter { get => currentFighter; set => currentFighter = value; }
+    public bool IsGenerating { get => isGenerating; set => isGenerating = value; }
     public bool Owned { get => owned; set => owned = value; }
     public bool Taken { get => taken; set => taken = value; }
+    public bool IsMarching { get => isMarching; set => isMarching = value; }
 
     private void Start()
     {
+        defaultOwner = buildingOwner;
+        defaultOwnerType = ownerType;
         InitializeVariables();
-        GetOwnerType();
+        GetOwnerType(ownerType);
         SubcribeEvent();
     }
 
@@ -82,22 +88,20 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     }
 
     private void Update()
-    {
+    {        
         GenerateFighter();
-        if (!isMarching)
-        {
-            CancelInvoke("InitializeFighter");
-        }
     }
 
     public void SubcribeEvent()
     {
         OnChangingNumberOfFighters += ChangeNumberOfFighter;
+        buildingOwner.OnChangingColorSet += ChangeBuildingColor;
     }
 
     public void UnsubcribeEvent()
     {
         OnChangingNumberOfFighters -= ChangeNumberOfFighter;
+        buildingOwner.OnChangingColorSet += ChangeBuildingColor;
     }
 
     public void InitializeVariables()
@@ -108,10 +112,9 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         degree = 100f;
         initializingDelay = 0.4f;
         generatingDelay = 1.5f;
-        radiusCheck = 4f;
         startFighter = buildingOwner.OwnerStat.startFighter;
         currentFighter = startFighter;
-        isGenerating = true;
+        isGenerating = false;
         isMarching = false;
     }
 
@@ -130,9 +133,9 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         maxCapacity = owner.OwnerStat.maxCapacity;     
     }
 
-    public void GetOwnerType()
+    public void GetOwnerType(GlobalVariables.Owner type)
     {
-        switch (ownerType)
+        switch (type)
         {
             case GlobalVariables.Owner.Player:
                 owned = true;
@@ -151,6 +154,20 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         }
     }
 
+    public void SetBuildingToDefault(Owner defaultOwner, GlobalVariables.Owner owerType)
+    {
+        GetBuildingStats(defaultOwner);
+        GetOwnerType(owerType);
+        InitializeVariables();
+        OnChangingNumberOfFighters?.Invoke(defaultOwner.ownerStat.startFighter);
+    }
+
+    public void ChangeBuildingColor(ColorSet newColorSet)
+    {
+        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.keyColor));
+        spriteRenderer.color = buildingColor;
+    }
+
     //Tao them fighter theo thoi gian
     public void GenerateFighter()
     {
@@ -162,7 +179,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         timeSinceGenerated += Time.deltaTime;
         if (timeSinceGenerated >= timeToGenerate)
         {
-            OnChangingNumberOfFighters?.Invoke(1);
+            OnChangingNumberOfFighters?.Invoke(currentFighter + 1);
             timeSinceGenerated = 0f;
         }
     }
@@ -178,16 +195,17 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
 
     public void ChangeNumberOfFighter(int fighter)
     {
-        currentFighter += fighter;
+        currentFighter = fighter;
     }
 
     //Nhan Fighter tu cac building khac
     public void ReceiveFighter(int fighter, Owner invader)
     {
+        isGenerating = false;
         GlobalVariables.Owner invaderType = invader.OwnerType;
-        if (ownerType.Equals(invaderType))
+        if (buildingOwner == invader)
         {
-            OnChangingNumberOfFighters?.Invoke(fighter);
+            OnChangingNumberOfFighters?.Invoke(currentFighter + fighter);
         }
         else
         {
@@ -198,9 +216,8 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
                     owned = true;
                     taken = false;
                     LevelManager.Instance.PlayerBuilding++;
-
                 }
-                else if (invader.OwnerType.Equals(GlobalVariables.Owner.Enemy))
+                else 
                 {
                     owned = false;
                     taken = true;
@@ -212,11 +229,11 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
                 OnChangingOnwer?.Invoke(invader);
                 this.buildingOwner.RemoveBuilding(this);
                 invader.AddBuilding(this);
-                LevelManager.Instance.CheckPlayerOwnedBuilding();                 
+                LevelManager.Instance.CheckWinCondition();                 
             }
             else
             {
-                OnChangingNumberOfFighters?.Invoke(-1 * fighter);
+                OnChangingNumberOfFighters?.Invoke(currentFighter - fighter);
             }
             StartCoroutine(DelayGenerating());
         }
@@ -225,6 +242,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     public void FighterMarching(string currentTargetID, Vector3 currentTargetPosition)
     {
         isMarching = true;
+        isGenerating = false;
         Vector3 direction = (currentTargetPosition - this.transform.position).normalized;
 
         if (directionDictionary.TryGetValue(currentTargetID, out VectorSet existedfighterDirecions))
@@ -290,16 +308,17 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     }
 
     public void InitializeFighter(string currentTargetID, VectorSet fighterDirections)
-    {      
+    {
+
         lineCapacity = currentFighter > 5 ? lineCapacity = 5 : lineCapacity = currentFighter;
-      
+
         if (currentFighter > 5)
         {
             for (int i = 0; i < lineCapacity; i++)
             {
                 GetFighterFromPool(i, currentTargetID, fighterDirections);       
             }
-            OnChangingNumberOfFighters?.Invoke(-5);
+            OnChangingNumberOfFighters?.Invoke(currentFighter - lineCapacity);
         }
         else
         {
@@ -307,7 +326,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
             {
                 GetFighterFromPool(i, currentTargetID, fighterDirections);
             }
-            OnChangingNumberOfFighters?.Invoke(-1 * currentFighter);          
+            OnChangingNumberOfFighters?.Invoke(currentFighter - lineCapacity);
             isMarching = false;
             StartCoroutine(DelayGenerating());
         }
@@ -330,7 +349,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         while(isMarching)
         {
             InitializeFighter(currentTargetID, fighterDirections);
-            yield return delayMarchcing;
+            yield return delayMarchcing;     
         }       
     }
 

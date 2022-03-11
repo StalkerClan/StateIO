@@ -9,6 +9,7 @@ public class EnemyStateManager : MonoBehaviour, ISubcriber
     public HashSet<Building> ownedBuildings;
 
     public IdleState IdleState = new IdleState();
+    public EngageState EngageState = new EngageState();
 
     public EnemyBaseState currentState;
 

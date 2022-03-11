@@ -10,19 +10,9 @@ public class IdleState : EnemyBaseState
 
     public override void UpdateState(EnemyStateManager enemyStateManager, HashSet<Building> buildings)
     {
-        foreach (Building building in buildings)
+        if (PlayerInput.Instance.Marched)
         {
-            foreach (Building nearbyBuilding in building.NearbyBuildings)
-            {
-                if (building.CurrentFighter > 12)
-                {
-                    if (nearbyBuilding.OwnerType.Equals(GlobalVariables.Owner.Neutral) ||
-                        nearbyBuilding.OwnerType.Equals(GlobalVariables.Owner.Player))
-                    {
-                        building.FighterMarching(nearbyBuilding.BuildingID, nearbyBuilding.transform.position);
-                    }
-                }
-            }
+            enemyStateManager.SwitchState(enemyStateManager.EngageState);
         }
     }
 }

@@ -1,13 +1,10 @@
-using System;
 using UnityEngine;
 
-public class GameStartState : GameState
+public class GameOver : BaseGameState
 {
-    public event Action<GameState> OnFinishedLevel = delegate { };
-
     public override void EnterState(GameManager gameManager)
     {
-        
+        Debug.Log("GameOver");
     }
 
     public override void UpdateState(GameManager gameManager)
@@ -15,4 +12,3 @@ public class GameStartState : GameState
         
     }
 }
-  

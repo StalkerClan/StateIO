@@ -4,29 +4,24 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    public GameStartState GameStartState = new GameStartState();
-    public GameOverState GameOverState = new GameOverState();
-    public FinishedLevelState FinishedLevelState = new FinishedLevelState();
-
-    private GameState currentState;
+    [SerializeField] private BaseGameState currentState;
 
     private void Awake()
     {
-        currentState = GameStartState;
-        GameStartState.EnterState(this);
+        currentState = GameState.MainMenu;
     }
 
     private void Start()
     {
-        
+         
     }
 
     private void Update()
     {
-           
+        currentState.UpdateState(this);
     }
 
-    public void SwitchState(GameState gameState)
+    public void SwitchState(BaseGameState gameState)
     {
         currentState = gameState;
         gameState.EnterState(this);

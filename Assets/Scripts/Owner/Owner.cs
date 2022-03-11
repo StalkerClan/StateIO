@@ -8,6 +8,7 @@ public abstract class Owner : MonoBehaviour
 {
     public event Action<Building> OnAddedBuilding = delegate { };
     public event Action<Building> OnRemovedBuilding = delegate { };
+    public event Action<ColorSet> OnChangingColorSet = delegate { };
 
     public GameObject fighterPrefab;
     public OwnerStat ownerStat;
@@ -43,4 +44,11 @@ public abstract class Owner : MonoBehaviour
             building.GetBuildingStats(this);
         }
     }
+
+    public  void ChangeColor(ColorSet colorSet)
+    {
+        ownerStat.colorSet = colorSet;
+        OnChangingColorSet?.Invoke(colorSet);
+    }
+
 }
