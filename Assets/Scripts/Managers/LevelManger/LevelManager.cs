@@ -5,53 +5,64 @@ using UnityEngine;
 
 public class LevelManager : Singleton<LevelManager>
 {
-    [SerializeField] private int numberOfBuildings = 7;
-    [SerializeField] private int playerBuilding = 1;
-    [SerializeField] private List<Building> activeBuildings;
+    public int LevelID;
 
-    public int NumberOfBuildings { get => numberOfBuildings; set => numberOfBuildings = value; }
+    [SerializeField]private Level currentLevel;
+
+    [SerializeField] private int playerBuilding;
+    [SerializeField] private int numberOfBuildings;
+    private LevelGenerator levelGenerator;
+
     public int PlayerBuilding { get => playerBuilding; set => playerBuilding = value; }
-    public List<Building> ActiveBuildings { get => activeBuildings; set => activeBuildings = value; }
+    public int NumberOfBuildings { get => numberOfBuildings; set => numberOfBuildings = value; }
+    public LevelGenerator LevelGenerator { get => levelGenerator; set => levelGenerator = value; }
 
-    private void Start()
+    private void Awake()
     {
-        
+        LevelID = PlayerPrefs.HasKey("LevelID") ? LevelID = PlayerPrefs.GetInt("LevelID") : LevelID = PlayerPrefs.GetInt("LevelID", 1);     
+        levelGenerator = FindObjectOfType<LevelGenerator>();
+        LoadMap();
+    }
+
+    public void LoadMap()
+    {
+        SetLevel();
+        levelGenerator.LoadMap();
+    }
+    public void SetLevel()
+    {
+        currentLevel = levelGenerator.CurrentLevel = levelGenerator.ListLevel[LevelID - 1];
+        currentLevel.SetLevelStatus(false, true, false);
+        playerBuilding = currentLevel.PlayerStartBuildings.Count;
+        numberOfBuildings = currentLevel.PlayableBuildings.Count;
     }
 
     public void CheckWinCondition()
     {
         if (playerBuilding >= numberOfBuildings)
         {
-            GameManager.Instance.SwitchState(GameState.FinishedLevel);
+            LevelCompleted();
         } 
         else if (playerBuilding <= 0)
         {
-            GameManager.Instance.SwitchState(GameState.GameOver);
+            GameOver();
         }
     }
 
-
-    public void EnableGeneratingFighter()
+    public void LevelCompleted()
     {
-        StartCoroutine(StartGeneratingFighter());
+        ObjectPooler.Instance.DeSpawnAllFighters();
+        levelGenerator.SetPlayerOwnedBuildings();
+        currentLevel.SetLevelStatus(true, false, false);
+        LevelID++;
+        PlayerPrefs.SetInt("LevelID", LevelID);
+        SetLevel();
+        levelGenerator.LoadLevel(); 
+        GameManager.Instance.SwitchState(GameState.MainMenu);
     }
 
-    IEnumerator StartGeneratingFighter()
+    public void GameOver()
     {
-        WaitForSeconds delay = Utilities.GetWaitForSeconds(1.5f);
-        yield return delay;
-
-        foreach (Building building in activeBuildings)
-        {
-            building.IsGenerating = true;
-        }
-    }
-
-    public void SetBuildingToDefault()
-    {
-        foreach (Building building in activeBuildings)
-        {
-            building.SetBuildingToDefault(building.DefaultOwner, building.DefaultOwnerType);
-        }
-    }
+        GameManager.Instance.SwitchState(GameState.GameOver);
+    }  
 }

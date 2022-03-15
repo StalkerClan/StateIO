@@ -11,11 +11,6 @@ public class GameManager : Singleton<GameManager>
         currentState = GameState.MainMenu;
     }
 
-    private void Start()
-    {
-         
-    }
-
     private void Update()
     {
         currentState.UpdateState(this);

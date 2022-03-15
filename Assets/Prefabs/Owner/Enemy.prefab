@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7076055586965680464}
   - component: {fileID: 8560326252177436734}
+  - component: {fileID: 143124838}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -43,7 +44,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4486c162349d574f81a44b4471a58d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fighterPrefab: {fileID: 0}
+  fighterPrefab: {fileID: 218721292623041232, guid: 1857885c186970645bc7a460fa0e9bfb, type: 3}
   ownerStat: {fileID: 11400000, guid: 58f6e0aa88dd9dc4cbead0184873be7f, type: 2}
   ownerType: 2
+  startBuilding: []
   ownedBuildings: []
+--- !u!114 &143124838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3238161137295969565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36322225dac62484b9ba562b0102e096, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemy: {fileID: 8560326252177436734}

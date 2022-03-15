@@ -6,7 +6,6 @@ using UnityEngine;
 public class EnemyStateManager : MonoBehaviour, ISubcriber
 {
     public Enemy enemy;
-    public HashSet<Building> ownedBuildings;
 
     public IdleState IdleState = new IdleState();
     public EngageState EngageState = new EngageState();
@@ -15,7 +14,6 @@ public class EnemyStateManager : MonoBehaviour, ISubcriber
 
     private void Start()
     {
-        ownedBuildings =  new HashSet<Building>(enemy.OwnedBuildings);
         currentState = IdleState;
         currentState.EnterState(this);
         SubcribeEvent();
@@ -38,11 +36,9 @@ public class EnemyStateManager : MonoBehaviour, ISubcriber
         enemy.OnRemovedBuilding -= RemoveBuilding;
     }
 
-
-    // Update is called once per frame
     private void Update()
     {
-        currentState.UpdateState(this, ownedBuildings);
+        currentState.UpdateState(this, enemy.HashSetOwnedBuildings);
     }
 
     public void SwitchState(EnemyBaseState enemyBaseState)
@@ -53,11 +49,11 @@ public class EnemyStateManager : MonoBehaviour, ISubcriber
 
     private void AddBuilding(Building newBuilding)
     {
-        ownedBuildings.Add(newBuilding);
+        enemy.OwnedBuildings.Add(newBuilding);
     }
     
     private void RemoveBuilding(Building newBuilding)
     {
-        ownedBuildings.Remove(newBuilding);
+        enemy.OwnedBuildings.Remove(newBuilding);
     }
 }

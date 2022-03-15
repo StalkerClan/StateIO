@@ -8,22 +8,37 @@ public  class UIController : MonoBehaviour
     [SerializeField] private GameObject gameplay;
     [SerializeField] private GameObject startButton;
     [SerializeField] private GameObject exitButton;
+    [SerializeField] private LevelGenerator levelGenerator;
 
     public GameObject MainMenu { get => mainMenu; set => mainMenu = value; }
     public GameObject Gameplay { get => gameplay; set => gameplay = value; }
     public GameObject StartButton { get => startButton; set => startButton = value; }
 
-    public void TapToPlay()
+    private void Start()
     {
-        startButton.SetActive(false);
-        LevelManager.Instance.EnableGeneratingFighter();
-        GameManager.Instance.SwitchState(GameState.GameStart);
+        levelGenerator = LevelManager.Instance.LevelGenerator;
     }
 
-    public void ExitToMainMenu()
+    public void TapToPlay()
     {
-        startButton.SetActive(true);
-        LevelManager.Instance.SetBuildingToDefault();
+        GameManager.Instance.SwitchState(GameState.GameStart);
+        levelGenerator.EnableGenerateFighter();     
+    }
+
+    public void BackToMainMenu()
+    {
         GameManager.Instance.SwitchState(GameState.MainMenu);
+        ObjectPooler.Instance.DeSpawnAllFighters();
+        levelGenerator.SetBuildingToDefault();
+    }
+
+    public void ChangePlayerColorToRed()
+    {
+        levelGenerator.ChangePlayerColorToRed();
+    }
+
+    public void ChangePlayerColorToBlue()
+    {
+        levelGenerator.ChangePlayerColorToBlue();
     }
 }

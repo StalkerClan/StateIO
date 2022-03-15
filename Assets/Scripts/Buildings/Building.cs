@@ -21,10 +21,11 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     public event Action<Owner> OnChangingOnwer = delegate { };
     public event Action<int> OnChangingNumberOfFighters = delegate { };
 
-    [SerializeField] private Owner buildingOwner;
-    [SerializeField] private Owner defaultOwner;
-
     [SerializeField] private GameObject fighterPrefab;
+
+    [SerializeField] private Owner defaultOwner;
+    [SerializeField] private Owner buildingOwner;
+
     [SerializeField] private SpriteRenderer spriteRenderer;
 
     [SerializeField] private Color buildingColor;
@@ -55,10 +56,10 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     [SerializeField] private bool owned;
     [SerializeField] private bool taken;
     [SerializeField] private bool isMarching;
+    [SerializeField] private bool idle;
 
     public Owner BuildingOwner { get => buildingOwner; set => buildingOwner = value; }
     public Owner DefaultOwner { get => defaultOwner; set => defaultOwner = value; }
-    public GameObject FighterPrefab { get => fighterPrefab; set => fighterPrefab = value; }
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; set => spriteRenderer = value; }
     public Color BuildingColor { get => buildingColor; set => buildingColor = value; }
     public GlobalVariables.Owner OwnerType { get => ownerType; set => ownerType = value; }
@@ -72,13 +73,14 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     public bool Owned { get => owned; set => owned = value; }
     public bool Taken { get => taken; set => taken = value; }
     public bool IsMarching { get => isMarching; set => isMarching = value; }
+    public bool Idle { get => idle; set => idle = value; }
 
     private void Start()
     {
-        defaultOwner = buildingOwner;
-        defaultOwnerType = ownerType;
-        InitializeVariables();
-        GetOwnerType(ownerType);
+        idle = false;
+        buildingOwner = defaultOwner;
+        ownerType = defaultOwnerType;
+        SetOwner(defaultOwner, defaultOwner.OwnerType);
         SubcribeEvent();
     }
 
@@ -95,36 +97,34 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     public void SubcribeEvent()
     {
         OnChangingNumberOfFighters += ChangeNumberOfFighter;
+        OnChangingOnwer += StopSpawningFighter;
         buildingOwner.OnChangingColorSet += ChangeBuildingColor;
     }
 
     public void UnsubcribeEvent()
     {
         OnChangingNumberOfFighters -= ChangeNumberOfFighter;
-        buildingOwner.OnChangingColorSet += ChangeBuildingColor;
+        OnChangingOnwer -= StopSpawningFighter;
+        buildingOwner.OnChangingColorSet -= ChangeBuildingColor;
     }
 
     public void InitializeVariables()
     {      
         directionDictionary = new Dictionary<string, VectorSet>();    
-        spacing = 0.13f;
+        spacing = 0.1f;
         multiplier = 2f;
         degree = 100f;
-        initializingDelay = 0.4f;
+        initializingDelay = 0.5f;
         generatingDelay = 1.5f;
         startFighter = buildingOwner.OwnerStat.startFighter;
         currentFighter = startFighter;
         isGenerating = false;
-        isMarching = false;
+        isMarching = false; 
     }
 
     public void GetBuildingStats(Owner owner)
     {
         this.buildingOwner = owner;
-        if (owner.FighterPrefab != null)
-        {
-            fighterPrefab = owner.FighterPrefab;
-        }
         spriteRenderer.sprite = owner.OwnerStat.buildingIcon;
         buildingColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.colorSet.keyColor));
         ownerType = owner.OwnerType;
@@ -154,13 +154,14 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         }
     }
 
-    public void SetBuildingToDefault(Owner defaultOwner, GlobalVariables.Owner owerType)
+    public void SetOwner(Owner owner, GlobalVariables.Owner owerType)
     {
-        GetBuildingStats(defaultOwner);
+        GetBuildingStats(owner);
         GetOwnerType(owerType);
         InitializeVariables();
-        OnChangingNumberOfFighters?.Invoke(defaultOwner.ownerStat.startFighter);
-        OnChangingOnwer?.Invoke(defaultOwner);
+        idle = true;
+        OnChangingNumberOfFighters?.Invoke(owner.ownerStat.startFighter);
+        OnChangingOnwer?.Invoke(owner);
     }
 
     public void ChangeBuildingColor(ColorSet newColorSet)
@@ -183,6 +184,11 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
             OnChangingNumberOfFighters?.Invoke(currentFighter + 1);
             timeSinceGenerated = 0f;
         }
+    }
+
+    public void StopSpawningFighter(Owner owner)
+    {
+        isMarching = false;
     }
 
     //Gioi han so luong fighter
@@ -236,6 +242,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
             {
                 OnChangingNumberOfFighters?.Invoke(currentFighter - fighter);
             }
+            if (idle) return;
             StartCoroutine(DelayGenerating());
         }
     }
@@ -248,18 +255,20 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
 
         if (directionDictionary.TryGetValue(currentTargetID, out VectorSet existedfighterDirecions))
         {
+            if (idle) return;
             StartCoroutine(DelayMarching(currentTargetID, existedfighterDirecions));
         }
         else
         {
             VectorSet vectorSet = GetVectorSet(currentTargetPosition);
+            if (idle) return;
             StartCoroutine(DelayMarching(currentTargetID, vectorSet));
             directionDictionary.Add(currentTargetID, vectorSet);
         }
     }
 
     public VectorSet GetVectorSet(Vector3 targetPosition)
-    {
+    {  
         List<Vector3> tempStartPositions = new List<Vector3>();
         List<Vector3> tempFighterDirections = new List<Vector3>();
 
@@ -270,10 +279,10 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         Vector3 rightVector = Helpers.VectorByRotateAngle(360 - degree, direction);
 
         Vector3 middlePoint = this.transform.position;
-        Vector3 mostLeftPoint = this.transform.position + (spacing * leftVector);
-        Vector3 mostRightPoint = this.transform.position + (spacing * rightVector);
-        Vector3 leftPoint = Vector3.Lerp(this.transform.position, mostLeftPoint, 0.6f);
-        Vector3 rightPoint = Vector3.Lerp(this.transform.position, mostRightPoint, 0.6f);
+        Vector3 leftPoint = this.transform.position + (spacing * leftVector);
+        Vector3 rightPoint = this.transform.position + (spacing * rightVector);
+        Vector3 mostLeftPoint = this.transform.position + (2f * spacing * leftVector);
+        Vector3 mostRightPoint = this.transform.position + (2f * spacing * rightVector);
 
         tempStartPositions.Add(middlePoint);
         tempStartPositions.Add(leftPoint);
@@ -329,6 +338,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
             }
             OnChangingNumberOfFighters?.Invoke(currentFighter - lineCapacity);
             isMarching = false;
+            if (idle) return;
             StartCoroutine(DelayGenerating());
         }
     }
@@ -340,8 +350,9 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         newFighter.transform.position = fighterDirections.startPositions[index];
         fighterStat.SpriteRenderer.color = buildingColor;
         fighterStat.Owner = buildingOwner;
-        fighterStat.TargetID = targetID;
         fighterStat.MoveDirection = fighterDirections.fighterDirections[index];
+        fighterStat.TargetID = targetID;
+        fighterStat.MoveSpeed = fighterStat.DefaultMoveSpeed;
     }
 
     IEnumerator DelayMarching(string currentTargetID, VectorSet fighterDirections)

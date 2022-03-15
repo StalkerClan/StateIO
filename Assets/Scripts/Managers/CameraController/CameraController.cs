@@ -17,6 +17,8 @@ public class CameraController : Singleton<CameraController>
     private float velocity2 = 0.0f;
     private bool stoppedZoom;
 
+    public GameObject DesiredPosition { get => desiredPosition; set => desiredPosition = value; }
+    public float DesiredSize { get => desiredSize; set => desiredSize = value; }
     public bool StoppedZoom { get => stoppedZoom; set => stoppedZoom = value; }
 
     private void Start()

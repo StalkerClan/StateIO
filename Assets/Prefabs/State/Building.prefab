@@ -136,12 +136,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: befe4da69d067d04487f8b009963c14b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fighterPrefab: {fileID: 2037365604297934646, guid: e4ca2b0ee5c88f244937c23534694982, type: 3}
+  defaultOwner: {fileID: 0}
   buildingOwner: {fileID: 0}
-  ownerStat: {fileID: 0}
-  fighterPrefab: {fileID: 0}
   spriteRenderer: {fileID: 0}
   buildingColor: {r: 0, g: 0, b: 0, a: 0}
-  ownerType: 0
+  ownerType: 1
+  defaultOwnerType: 1
+  nearbyBuildings: []
   buildingID: 
   timeToGenerate: 0
   initializingDelay: 0
@@ -153,7 +155,6 @@ MonoBehaviour:
   isGenerating: 0
   owned: 0
   taken: 0
-  selected: 0
   isMarching: 0
 --- !u!1001 &1194725848945686219
 PrefabInstance:

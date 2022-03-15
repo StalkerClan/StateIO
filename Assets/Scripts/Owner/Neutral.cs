@@ -4,8 +4,5 @@ using UnityEngine;
 
 public class Neutral : Owner
 {
-    private void OnEnable()
-    {
-        SetBuildingOwner();
-    }
+    
 }

@@ -4,13 +4,7 @@ using UnityEngine;
 
 public class ColorController : Singleton<ColorController>
 {
-    [System.Serializable]
-    public class ColorPicker
-    {
-        public ColorSet ColorSet;
-    }
+    [SerializeField] private List<ColorSet> colorSets;
 
-    private List<ColorPicker> colorList;
-
-    public List<ColorPicker> ColorList { get => colorList; set => colorList = value; }
+    public List<ColorSet> ColorSets { get => colorSets; set => colorSets = value; }
 }
