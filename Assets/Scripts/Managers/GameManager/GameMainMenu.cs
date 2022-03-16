@@ -7,8 +7,7 @@ public class MainMenu : BaseGameState
 
     public override void EnterState(GameManager gameManager)
     {
-        UIManager.Instance.ShowUI(UIManager.Instance.UIController.MainMenu);
-        UIManager.Instance.HideUI(UIManager.Instance.UIController.Gameplay);
+        
     }
 
     public override void UpdateState(GameManager gameManager)

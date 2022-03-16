@@ -18,6 +18,16 @@ public abstract class Level : MonoBehaviour
     public List<Building> PlayableBuildings;
     public LevelStatus Status;
 
+    private void OnEnable()
+    {
+        PlayableBuildings.AddRange(PlayerStartBuildings);
+        foreach (EnemyInfo enemyInfo in EnemyInfos)
+        {
+            PlayableBuildings.AddRange(enemyInfo.EnemyStartBuildings);
+        }
+        PlayableBuildings.AddRange(NeutralStartBuildings);
+    }
+
     public void SetLevelStatus(bool completed, bool isPlaying, bool locked)
     {
         Status.Completed = completed;

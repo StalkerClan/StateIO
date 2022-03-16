@@ -7,20 +7,20 @@ public class OwnerStat : ScriptableObject
     public new string name;
 
     [Header("Stats")]
-    public ColorSet colorSet;
+    public ColorSet ColorSet;
 
-    public float timeToGenerate;
+    public float TimeToGenerate;
 
-    public int startFighter;
-    public int maxCapacity;
+    public int StartFighter;
+    public int MaxCapacity;
 
     [Header("Resources")]
-    public int currency;
+    public int Currency;
 
     [Header("Fighter")]
-    public float defaultMoveSpeed;
+    public float DefaultMoveSpeed;
 
     [Header("Model")]
-    public Sprite buildingIcon;
-    public Sprite fighterIcon;
+    public Sprite BuildingIcon;
+    public Sprite FighterIcon;
 }

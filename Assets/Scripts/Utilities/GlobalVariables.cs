@@ -8,4 +8,14 @@ public static class GlobalVariables
         Neutral,
         Enemy,
     }
+
+    public enum UIType
+    {
+        MainMenu,
+        Settings,
+        Store,
+        GameUI,
+        Gameplay,
+        GameOverScreen
+    }
 }

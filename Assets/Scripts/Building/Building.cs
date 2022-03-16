@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiver
 {
-
     public class VectorSet
     {
         public List<Vector3> startPositions;
@@ -56,7 +55,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     [SerializeField] private bool owned;
     [SerializeField] private bool taken;
     [SerializeField] private bool isMarching;
-    [SerializeField] private bool idle;
+    [SerializeField] private bool active;
 
     public Owner BuildingOwner { get => buildingOwner; set => buildingOwner = value; }
     public Owner DefaultOwner { get => defaultOwner; set => defaultOwner = value; }
@@ -67,17 +66,18 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     public List<Building> NearbyBuildings { get => nearbyBuildings; set => nearbyBuildings = value; }
     public string BuildingID { get => buildingID; set => buildingID = value; }
     public float TimeToGenerate { get => timeToGenerate; set => timeToGenerate = value; }
+    public int StartFighter { get => startFighter; set => startFighter = value; }
     public int MaxCapacity { get => maxCapacity; set => maxCapacity = value; }
     public int CurrentFighter { get => currentFighter; set => currentFighter = value; }
     public bool IsGenerating { get => isGenerating; set => isGenerating = value; }
     public bool Owned { get => owned; set => owned = value; }
     public bool Taken { get => taken; set => taken = value; }
     public bool IsMarching { get => isMarching; set => isMarching = value; }
-    public bool Idle { get => idle; set => idle = value; }
+    public bool Active { get => active; set => active = value; }
+
 
     private void Start()
     {
-        idle = false;
         buildingOwner = defaultOwner;
         ownerType = defaultOwnerType;
         SetOwner(defaultOwner, defaultOwner.OwnerType);
@@ -114,23 +114,25 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         spacing = 0.1f;
         multiplier = 2f;
         degree = 100f;
-        initializingDelay = 0.5f;
-        generatingDelay = 1.5f;
-        startFighter = buildingOwner.OwnerStat.startFighter;
+        initializingDelay = 0.3f;
+        generatingDelay = 1.8f;
+        startFighter = buildingOwner.OwnerStat.StartFighter;
         currentFighter = startFighter;
         isGenerating = false;
-        isMarching = false; 
+        isMarching = false;
+        active = false;     
     }
 
     public void GetBuildingStats(Owner owner)
     {
         this.buildingOwner = owner;
-        spriteRenderer.sprite = owner.OwnerStat.buildingIcon;
-        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.colorSet.keyColor));
-        ownerType = owner.OwnerType;
+        spriteRenderer.sprite = owner.OwnerStat.BuildingIcon;
+        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.ColorSet.keyColor));
+        defaultOwnerType = owner.OwnerType;
+        ownerType = defaultOwnerType;
         spriteRenderer.color = buildingColor;
-        timeToGenerate = owner.OwnerStat.timeToGenerate;
-        maxCapacity = owner.OwnerStat.maxCapacity;     
+        timeToGenerate = owner.OwnerStat.TimeToGenerate;
+        maxCapacity = owner.OwnerStat.MaxCapacity;
     }
 
     public void GetOwnerType(GlobalVariables.Owner type)
@@ -159,8 +161,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         GetBuildingStats(owner);
         GetOwnerType(owerType);
         InitializeVariables();
-        idle = true;
-        OnChangingNumberOfFighters?.Invoke(owner.ownerStat.startFighter);
+        OnChangingNumberOfFighters?.Invoke(owner.ownerStat.StartFighter);
         OnChangingOnwer?.Invoke(owner);
     }
 
@@ -217,34 +218,29 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         else
         {
             if (currentFighter <= 0)
-            {      
+            {
                 if (invader.OwnerType.Equals(GlobalVariables.Owner.Player))
                 {
                     owned = true;
                     taken = false;
-                    LevelManager.Instance.PlayerBuilding++;
                 }
-                else 
+                else
                 {
                     owned = false;
                     taken = true;
-                    if (this.OwnerType.Equals(GlobalVariables.Owner.Player))
-                    {
-                        LevelManager.Instance.PlayerBuilding--;
-                    }
                 }
-                OnChangingOnwer?.Invoke(invader);
                 this.buildingOwner.RemoveBuilding(this);
                 invader.AddBuilding(this);
-                LevelManager.Instance.CheckWinCondition();                 
+                LevelManager.Instance.LevelGenerator.CheckWinCondition();
+                OnChangingOnwer?.Invoke(invader);
             }
             else
             {
                 OnChangingNumberOfFighters?.Invoke(currentFighter - fighter);
             }
-            if (idle) return;
-            StartCoroutine(DelayGenerating());
+
         }
+        StartCoroutine(DelayGenerating());
     }
 
     public void FighterMarching(string currentTargetID, Vector3 currentTargetPosition)
@@ -255,20 +251,20 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
 
         if (directionDictionary.TryGetValue(currentTargetID, out VectorSet existedfighterDirecions))
         {
-            if (idle) return;
             StartCoroutine(DelayMarching(currentTargetID, existedfighterDirecions));
         }
         else
         {
             VectorSet vectorSet = GetVectorSet(currentTargetPosition);
-            if (idle) return;
-            StartCoroutine(DelayMarching(currentTargetID, vectorSet));
             directionDictionary.Add(currentTargetID, vectorSet);
+            StartCoroutine(DelayMarching(currentTargetID, vectorSet));
         }
     }
 
     public VectorSet GetVectorSet(Vector3 targetPosition)
-    {  
+    {
+        float additionDegree = 10f;
+
         List<Vector3> tempStartPositions = new List<Vector3>();
         List<Vector3> tempFighterDirections = new List<Vector3>();
 
@@ -277,12 +273,15 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         //Form arc formation
         Vector3 leftVector = Helpers.VectorByRotateAngle(degree, direction);
         Vector3 rightVector = Helpers.VectorByRotateAngle(360 - degree, direction);
+        Vector3 mostLeftVector = Helpers.VectorByRotateAngle(degree + additionDegree, direction);
+        Vector3 mostRightVector = Helpers.VectorByRotateAngle(360 - (degree + additionDegree), direction);
+
 
         Vector3 middlePoint = this.transform.position;
         Vector3 leftPoint = this.transform.position + (spacing * leftVector);
         Vector3 rightPoint = this.transform.position + (spacing * rightVector);
-        Vector3 mostLeftPoint = this.transform.position + (2f * spacing * leftVector);
-        Vector3 mostRightPoint = this.transform.position + (2f * spacing * rightVector);
+        Vector3 mostLeftPoint = this.transform.position + (2f * spacing * mostLeftVector);
+        Vector3 mostRightPoint = this.transform.position + (2f * spacing * mostRightVector);
 
         tempStartPositions.Add(middlePoint);
         tempStartPositions.Add(leftPoint);
@@ -338,8 +337,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
             }
             OnChangingNumberOfFighters?.Invoke(currentFighter - lineCapacity);
             isMarching = false;
-            if (idle) return;
-            StartCoroutine(DelayGenerating());
+            StartCoroutine(DelayGenerating()); ;    
         }
     }
 
@@ -369,7 +367,10 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     {
         WaitForSeconds delayGenerating = Utilities.GetWaitForSeconds(generatingDelay);
         yield return delayGenerating;
-
-        isGenerating = true;
+        
+        if (active)
+        {
+            isGenerating = true;
+        }
     }
 }

@@ -39,7 +39,7 @@ public class Fighter : MonoBehaviour, IInitializeVariables
 
     public void InitializeVariables()
     {
-        defaultMoveSpeed = owner.OwnerStat.defaultMoveSpeed;
+        defaultMoveSpeed = owner.OwnerStat.DefaultMoveSpeed;
         moveSpeed = defaultMoveSpeed;
     }
 

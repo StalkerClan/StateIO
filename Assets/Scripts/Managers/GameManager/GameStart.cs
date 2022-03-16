@@ -7,8 +7,7 @@ public class GameStart : BaseGameState
 {
     public override void EnterState(GameManager gameManager)
     {
-        UIManager.Instance.HideUI(UIManager.Instance.UIController.MainMenu);
-        UIManager.Instance.ShowUI(UIManager.Instance.UIController.Gameplay);
+
     }
 
     public override void UpdateState(GameManager gameManager)

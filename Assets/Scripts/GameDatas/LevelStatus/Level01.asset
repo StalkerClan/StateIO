@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Level01
   m_EditorClassIdentifier: 
   Completed: 0
-  IsPlaying: 1
-  Locked: 0
+  IsPlaying: 0
+  Locked: 1

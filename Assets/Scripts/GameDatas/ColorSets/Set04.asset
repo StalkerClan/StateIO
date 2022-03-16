@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6948b648f1ecae74aaab7135268ad774, type: 3}
-  m_Name: Set01
+  m_Name: Set04
   m_EditorClassIdentifier: 
-  keyColor: {r: 1, g: 1, b: 1, a: 0}
-  firstColor: {r: 0.63529414, g: 0.63529414, b: 0.63529414, a: 0}
-  secondColor: {r: 0.63529414, g: 0.63529414, b: 0.63529414, a: 0}
+  keyColor: {r: 0.4392157, g: 0.05490196, b: 0.26666668, a: 0}
+  firstColor: {r: 0.99607843, g: 0.5529412, b: 0.68235296, a: 0}
+  secondColor: {r: 1, g: 0.2113207, b: 0.44164273, a: 0}

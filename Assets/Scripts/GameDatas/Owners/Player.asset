@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Player
   m_EditorClassIdentifier: 
   name: Player
-  colorSet: {fileID: 11400000, guid: 036e22a2f9329cd458135e8fae2be61a, type: 2}
-  timeToGenerate: 1
-  startFighter: 10
-  maxCapacity: 50
-  currency: 0
-  defaultMoveSpeed: 1.2
-  buildingIcon: {fileID: 21300000, guid: 75e7fc89f6f5792448bdd3a330171255, type: 3}
-  fighterIcon: {fileID: 21300000, guid: f3a2d8a65ec7d57449b4b6597e930160, type: 3}
+  ColorSet: {fileID: 11400000, guid: 6734aa050c31675408b8a9cd5e6c991b, type: 2}
+  TimeToGenerate: 1
+  StartFighter: 10
+  MaxCapacity: 50
+  Currency: 0
+  DefaultMoveSpeed: 1.2
+  BuildingIcon: {fileID: 21300000, guid: 75e7fc89f6f5792448bdd3a330171255, type: 3}
+  FighterIcon: {fileID: 21300000, guid: f3a2d8a65ec7d57449b4b6597e930160, type: 3}

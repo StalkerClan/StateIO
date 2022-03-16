@@ -1,32 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
+
 public  class UIController : MonoBehaviour
 {
-    [SerializeField] private GameObject mainMenu;
-    [SerializeField] private GameObject gameplay;
-    [SerializeField] private GameObject startButton;
-    [SerializeField] private GameObject exitButton;
-    [SerializeField] private LevelGenerator levelGenerator;
-
-    public GameObject MainMenu { get => mainMenu; set => mainMenu = value; }
-    public GameObject Gameplay { get => gameplay; set => gameplay = value; }
-    public GameObject StartButton { get => startButton; set => startButton = value; }
+    public GameObject MainMenu;
+    public GameObject ColorPickerPanel;
+    public GameObject UpgradePanel;
+    public GameObject Gameplay;
+    private LevelGenerator levelGenerator;
 
     private void Start()
     {
         levelGenerator = LevelManager.Instance.LevelGenerator;
+        if (LevelManager.Instance.LevelID >= 2)
+        {
+            ShowUI(UpgradePanel, true);
+            ShowUI(ColorPickerPanel, false);
+        }
+        else
+        {
+            ShowUI(UpgradePanel, false);
+            ShowUI(ColorPickerPanel, true);
+        }
     }
 
     public void TapToPlay()
     {
+        ShowUI(MainMenu, false);
+        ShowUI(Gameplay, true);
         GameManager.Instance.SwitchState(GameState.GameStart);
         levelGenerator.EnableGenerateFighter();     
     }
 
     public void BackToMainMenu()
     {
+        ShowUI(MainMenu, true);
+        ShowUI(Gameplay, false);
         GameManager.Instance.SwitchState(GameState.MainMenu);
         ObjectPooler.Instance.DeSpawnAllFighters();
         levelGenerator.SetBuildingToDefault();
@@ -40,5 +51,10 @@ public  class UIController : MonoBehaviour
     public void ChangePlayerColorToBlue()
     {
         levelGenerator.ChangePlayerColorToBlue();
+    }
+
+    private void ShowUI(GameObject uiElement, bool isShow)
+    {
+        uiElement.SetActive(isShow);
     }
 }

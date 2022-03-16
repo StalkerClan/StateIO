@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7f0908c17795cf4da18b54be87c5841, type: 3}
-  m_Name: Neutral
+  m_Name: Enemy01
   m_EditorClassIdentifier: 
-  name: Neutral
-  ColorSet: {fileID: 11400000, guid: ab9df4e6bec625f40848e206cb31f1a1, type: 2}
+  name: Enemy
+  ColorSet: {fileID: 11400000, guid: 036e22a2f9329cd458135e8fae2be61a, type: 2}
   TimeToGenerate: 1
   StartFighter: 10
-  MaxCapacity: 10
+  MaxCapacity: 50
   Currency: 0
   DefaultMoveSpeed: 1.2
   BuildingIcon: {fileID: 21300000, guid: 75e7fc89f6f5792448bdd3a330171255, type: 3}

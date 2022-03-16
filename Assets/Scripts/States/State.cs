@@ -47,7 +47,6 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
 
     public void InitializeVariables()
     {
-        building = GetComponentInChildren<Building>();
         stateOwner = building.BuildingOwner;
     }
 
@@ -63,8 +62,8 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
     public void SetOwner(Owner owner)
     {
         stateOwner = owner;
-        firstColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.colorSet.firstColor));
-        secondColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.colorSet.secondColor));
+        firstColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.ColorSet.firstColor));
+        secondColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.ColorSet.secondColor));
         buildingMaxCapacity = building.MaxCapacity;
         float percent = currentFighter / buildingMaxCapacity;
         currentColor = Color.Lerp(firstColor, secondColor, percent);

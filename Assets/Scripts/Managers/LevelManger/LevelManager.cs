@@ -3,25 +3,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : Singleton<LevelManager>
+public class LevelManager : Singleton<LevelManager>, ISubcriber
 {
+    public event Action<int> OnShowingLevelID = delegate { };
+
     public int LevelID;
 
     [SerializeField]private Level currentLevel;
-
-    [SerializeField] private int playerBuilding;
-    [SerializeField] private int numberOfBuildings;
     private LevelGenerator levelGenerator;
-
-    public int PlayerBuilding { get => playerBuilding; set => playerBuilding = value; }
-    public int NumberOfBuildings { get => numberOfBuildings; set => numberOfBuildings = value; }
     public LevelGenerator LevelGenerator { get => levelGenerator; set => levelGenerator = value; }
 
     private void Awake()
     {
-        LevelID = PlayerPrefs.HasKey("LevelID") ? LevelID = PlayerPrefs.GetInt("LevelID") : LevelID = PlayerPrefs.GetInt("LevelID", 1);     
+        LevelID = PlayerPrefs.HasKey("LevelID") ? LevelID = PlayerPrefs.GetInt("LevelID") : LevelID = PlayerPrefs.GetInt("LevelID", 1);       
         levelGenerator = FindObjectOfType<LevelGenerator>();
+        SubcribeEvent();
         LoadMap();
+    }
+
+    private void OnDisable()
+    {
+        UnsubcribeEvent();
+    }
+    public void SubcribeEvent()
+    {
+        levelGenerator.OnEnemiesOutOfBuildings += LevelCompleted;
+        levelGenerator.OnPlayerOutOfBuildings += GameOver;
+    }
+
+    public void UnsubcribeEvent()
+    {
+        levelGenerator.OnEnemiesOutOfBuildings -= LevelCompleted;
+        levelGenerator.OnPlayerOutOfBuildings -= GameOver;
     }
 
     public void LoadMap()
@@ -33,20 +46,6 @@ public class LevelManager : Singleton<LevelManager>
     {
         currentLevel = levelGenerator.CurrentLevel = levelGenerator.ListLevel[LevelID - 1];
         currentLevel.SetLevelStatus(false, true, false);
-        playerBuilding = currentLevel.PlayerStartBuildings.Count;
-        numberOfBuildings = currentLevel.PlayableBuildings.Count;
-    }
-
-    public void CheckWinCondition()
-    {
-        if (playerBuilding >= numberOfBuildings)
-        {
-            LevelCompleted();
-        } 
-        else if (playerBuilding <= 0)
-        {
-            GameOver();
-        }
     }
 
     public void LevelCompleted()
@@ -57,12 +56,12 @@ public class LevelManager : Singleton<LevelManager>
         LevelID++;
         PlayerPrefs.SetInt("LevelID", LevelID);
         SetLevel();
-        levelGenerator.LoadLevel(); 
         GameManager.Instance.SwitchState(GameState.MainMenu);
+        levelGenerator.LoadLevel();    
     }
 
     public void GameOver()
     {
         GameManager.Instance.SwitchState(GameState.GameOver);
-    }  
+    }
 }

@@ -43,7 +43,7 @@ public abstract class Owner : MonoBehaviour
 
     public  void ChangeColor(ColorSet colorSet)
     {
-        ownerStat.colorSet = colorSet;
+        ownerStat.ColorSet = colorSet;
         OnChangingColorSet?.Invoke(colorSet);
     }
 }

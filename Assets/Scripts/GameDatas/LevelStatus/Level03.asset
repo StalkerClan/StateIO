@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6948b648f1ecae74aaab7135268ad774, type: 3}
-  m_Name: Set01
+  m_Script: {fileID: 11500000, guid: 112e1552dd7271d4a9440175be36afad, type: 3}
+  m_Name: Level03
   m_EditorClassIdentifier: 
-  keyColor: {r: 1, g: 1, b: 1, a: 0}
-  firstColor: {r: 0.63529414, g: 0.63529414, b: 0.63529414, a: 0}
-  secondColor: {r: 0.63529414, g: 0.63529414, b: 0.63529414, a: 0}
+  Completed: 0
+  IsPlaying: 0
+  Locked: 1
