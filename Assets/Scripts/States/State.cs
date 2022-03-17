@@ -20,7 +20,7 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
     {
         InitializeVariables();
         SetOwner(stateOwner);
-        SetStateName(building);
+        SetStateAndBuildingName();
         SubcribeEvent();
     }
 
@@ -36,13 +36,12 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
     public void SubcribeEvent()
     {      
         building.OnChangingOnwer += SetOwner;
-        stateOwner.OnChangingColorSet += ChangeStateColor;
     }
 
     public void UnsubcribeEvent()
     {
-        building.OnChangingOnwer -= SetOwner;
-        stateOwner.OnChangingColorSet += ChangeStateColor;
+        building.OnChangingOnwer -= SetOwner; 
+        stateOwner.OnChangingColorSet -= ChangeStateColor;
     }
 
     public void InitializeVariables()
@@ -50,7 +49,7 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
         stateOwner = building.BuildingOwner;
     }
 
-    private void SetStateName(Building building)
+    private void SetStateAndBuildingName()
     {
         stateName = spriteRenderer.sprite.name;
         stateName = stateName.Remove(0, 3);
@@ -61,9 +60,14 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
 
     public void SetOwner(Owner owner)
     {
+        if (stateOwner != null)
+        {
+            stateOwner.OnChangingColorSet -= ChangeStateColor;
+        }
         stateOwner = owner;
-        firstColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.ColorSet.firstColor));
-        secondColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.ColorSet.secondColor));
+        stateOwner.OnChangingColorSet += ChangeStateColor;
+        firstColor = Utilities.HexToColor(Utilities.ColorToHex(stateOwner.OwnerStat.ColorSet.firstColor));
+        secondColor = Utilities.HexToColor(Utilities.ColorToHex(stateOwner.OwnerStat.ColorSet.secondColor));
         buildingMaxCapacity = building.MaxCapacity;
         float percent = currentFighter / buildingMaxCapacity;
         currentColor = Color.Lerp(firstColor, secondColor, percent);
@@ -72,6 +76,7 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
 
     public void ChangeStateColor(ColorSet newColorSet)
     {
+       
         firstColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.firstColor));
         secondColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.secondColor));
         buildingMaxCapacity = building.MaxCapacity;
@@ -88,5 +93,4 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
         currentColor = Color.Lerp(firstColor, secondColor, percent);
         spriteRenderer.color = currentColor;
     }
-  
 }

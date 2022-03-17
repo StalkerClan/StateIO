@@ -9,17 +9,17 @@ public  class UIController : MonoBehaviour
 
     public Canvas Canvas;
     public List<UIElement> UIElementList;
-    public UIElement Gameplay;
     public UIMainMenu MainMenu;
+    public UIElement Gameplay;
 
     private LevelGenerator levelGenerator;
-
-   
 
     private void Start()
     {
         GetListUIElement();
         MainMenu = (UIMainMenu) UIElementList.Find(x => x.Type == GlobalVariables.UIType.MainMenu);       
+        Gameplay = UIElementList.Find(x => x.Type == GlobalVariables.UIType.Gameplay);
+        ShowUI(Gameplay.gameObject, false);
         levelGenerator = LevelManager.Instance.LevelGenerator; 
     }
     public void GetListUIElement()
@@ -29,6 +29,8 @@ public  class UIController : MonoBehaviour
 
     public void ShowMainMenu()
     {
+        ShowUI(Gameplay.gameObject, false);
+        ShowUI(MainMenu.gameObject, true);
         if (!passedFirstLevel)
         {
             ShowUI(MainMenu.ColorPicker, true);
@@ -44,19 +46,17 @@ public  class UIController : MonoBehaviour
     public void TapToPlay()
     {
         GameManager.Instance.SwitchState(GameState.GameStart);
-        levelGenerator.EnableGenerateFighter();
-        ShowUI(Gameplay.gameObject, true);
-        ShowUI(MainMenu.gameObject, false);
     }
 
     public void BackToMainMenu()
-    {
-        
+    {       
         GameManager.Instance.SwitchState(GameState.MainMenu);
-        ObjectPooler.Instance.DeSpawnAllFighters();
-        levelGenerator.SetBuildingToDefault();
-        ShowUI(Gameplay.gameObject, false);
-        ShowUI(MainMenu.gameObject, true);
+    }
+
+    public void ShowGameplay()
+    {
+        ShowUI(Gameplay.gameObject, true);
+        ShowUI(MainMenu.gameObject, false);
     }
 
     public void ChangePlayerColorToRed()

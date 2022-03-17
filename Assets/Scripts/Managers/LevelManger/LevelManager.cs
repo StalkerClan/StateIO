@@ -50,7 +50,6 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
 
     public void LevelCompleted()
     {
-        ObjectPooler.Instance.DeSpawnAllFighters();
         levelGenerator.SetPlayerOwnedBuildings();
         currentLevel.SetLevelStatus(true, false, false);
         LevelID++;

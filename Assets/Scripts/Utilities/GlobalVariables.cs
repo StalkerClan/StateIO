@@ -12,10 +12,10 @@ public static class GlobalVariables
     public enum UIType
     {
         MainMenu,
+        Gameplay,
         Settings,
         Store,
         GameUI,
-        Gameplay,
         GameOverScreen
     }
 }

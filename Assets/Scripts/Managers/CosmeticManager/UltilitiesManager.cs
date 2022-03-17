@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class UltilitiesManager : Singleton<UltilitiesManager>
 {
-    public List<ColorSet> PlayerColorSets;
-    public List<ColorSet> EnemiesColorSets;
+    public List<ColorSet> ColorSets;
     public List<OwnerStat> EnemiesStats;
 }

@@ -38,7 +38,7 @@ public class EnemyStateManager : MonoBehaviour, ISubcriber
 
     private void Update()
     {
-        currentState.UpdateState(this, enemy.HashSetOwnedBuildings);
+        currentState.UpdateState(this, enemy.HashSetStartBuildings);
     }
 
     public void SwitchState(EnemyBaseState enemyBaseState)
@@ -49,11 +49,11 @@ public class EnemyStateManager : MonoBehaviour, ISubcriber
 
     private void AddBuilding(Building newBuilding)
     {
-        enemy.OwnedBuildings.Add(newBuilding);
+        enemy.StartBuildings.Add(newBuilding);
     }
     
     private void RemoveBuilding(Building newBuilding)
     {
-        enemy.OwnedBuildings.Remove(newBuilding);
+        enemy.StartBuildings.Remove(newBuilding);
     }
 }

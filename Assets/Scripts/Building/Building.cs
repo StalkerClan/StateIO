@@ -78,8 +78,6 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
 
     private void Start()
     {
-        buildingOwner = defaultOwner;
-        ownerType = defaultOwnerType;
         SetOwner(defaultOwner, defaultOwner.OwnerType);
         SubcribeEvent();
     }
@@ -98,7 +96,6 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     {
         OnChangingNumberOfFighters += ChangeNumberOfFighter;
         OnChangingOnwer += StopSpawningFighter;
-        buildingOwner.OnChangingColorSet += ChangeBuildingColor;
     }
 
     public void UnsubcribeEvent()
@@ -108,10 +105,20 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         buildingOwner.OnChangingColorSet -= ChangeBuildingColor;
     }
 
+    public void SetOwner(Owner owner, GlobalVariables.Owner owerType)
+    {       
+        GetBuildingStats(owner);        
+        GetOwnerType(owerType);
+        InitializeVariables();
+        OnChangingNumberOfFighters?.Invoke(owner.ownerStat.StartFighter);
+        OnChangingOnwer?.Invoke(owner);
+        if (currentFighter >= startFighter) currentFighter = startFighter;
+    }
+
     public void InitializeVariables()
     {      
         directionDictionary = new Dictionary<string, VectorSet>();    
-        spacing = 0.1f;
+        spacing = 0.12f;
         multiplier = 2f;
         degree = 100f;
         initializingDelay = 0.3f;
@@ -125,11 +132,17 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
 
     public void GetBuildingStats(Owner owner)
     {
-        this.buildingOwner = owner;
-        spriteRenderer.sprite = owner.OwnerStat.BuildingIcon;
-        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(owner.OwnerStat.ColorSet.keyColor));
-        defaultOwnerType = owner.OwnerType;
+        if (defaultOwner != null)
+        {
+            defaultOwner.OnChangingColorSet -= ChangeBuildingColor;
+        }
+        defaultOwner = owner;
+        defaultOwner.OnChangingColorSet += ChangeBuildingColor;
+        buildingOwner = defaultOwner;
+        defaultOwnerType = defaultOwner.OwnerType;
         ownerType = defaultOwnerType;
+        spriteRenderer.sprite = defaultOwner.OwnerStat.BuildingIcon;
+        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(defaultOwner.OwnerStat.ColorSet.keyColor));
         spriteRenderer.color = buildingColor;
         timeToGenerate = owner.OwnerStat.TimeToGenerate;
         maxCapacity = owner.OwnerStat.MaxCapacity;
@@ -154,15 +167,6 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
             default:
                 break;
         }
-    }
-
-    public void SetOwner(Owner owner, GlobalVariables.Owner owerType)
-    {
-        GetBuildingStats(owner);
-        GetOwnerType(owerType);
-        InitializeVariables();
-        OnChangingNumberOfFighters?.Invoke(owner.ownerStat.StartFighter);
-        OnChangingOnwer?.Invoke(owner);
     }
 
     public void ChangeBuildingColor(ColorSet newColorSet)
@@ -238,7 +242,6 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
             {
                 OnChangingNumberOfFighters?.Invoke(currentFighter - fighter);
             }
-
         }
         StartCoroutine(DelayGenerating());
     }

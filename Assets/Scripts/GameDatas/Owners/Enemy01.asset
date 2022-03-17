@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Enemy01
   m_EditorClassIdentifier: 
   name: Enemy
-  ColorSet: {fileID: 11400000, guid: 036e22a2f9329cd458135e8fae2be61a, type: 2}
+  ColorSet: {fileID: 11400000, guid: ab9df4e6bec625f40848e206cb31f1a1, type: 2}
   TimeToGenerate: 1
   StartFighter: 10
   MaxCapacity: 50
