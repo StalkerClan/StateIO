@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Level : MonoBehaviour
+public class Level : MonoBehaviour
 {
     [System.Serializable]
     public class EnemyInfo

@@ -5,42 +5,58 @@ using UnityEngine;
 
 public  class UIController : MonoBehaviour
 {
-    public GameObject MainMenu;
-    public GameObject ColorPickerPanel;
-    public GameObject UpgradePanel;
-    public GameObject Gameplay;
+    public static bool passedFirstLevel = false;
+
+    public Canvas Canvas;
+    public List<UIElement> UIElementList;
+    public UIElement Gameplay;
+    public UIMainMenu MainMenu;
+
     private LevelGenerator levelGenerator;
+
+   
 
     private void Start()
     {
-        levelGenerator = LevelManager.Instance.LevelGenerator;
-        if (LevelManager.Instance.LevelID >= 2)
+        GetListUIElement();
+        MainMenu = (UIMainMenu) UIElementList.Find(x => x.Type == GlobalVariables.UIType.MainMenu);       
+        levelGenerator = LevelManager.Instance.LevelGenerator; 
+    }
+    public void GetListUIElement()
+    {
+        UIElementList = Canvas.GetComponentsInChildren<UIElement>().ToList();
+    }
+
+    public void ShowMainMenu()
+    {
+        if (!passedFirstLevel)
         {
-            ShowUI(UpgradePanel, true);
-            ShowUI(ColorPickerPanel, false);
+            ShowUI(MainMenu.ColorPicker, true);
+            ShowUI(MainMenu.Upgrade, false);
         }
         else
         {
-            ShowUI(UpgradePanel, false);
-            ShowUI(ColorPickerPanel, true);
+            ShowUI(MainMenu.ColorPicker, false);
+            ShowUI(MainMenu.Upgrade, true);
         }
     }
 
     public void TapToPlay()
     {
-        ShowUI(MainMenu, false);
-        ShowUI(Gameplay, true);
         GameManager.Instance.SwitchState(GameState.GameStart);
-        levelGenerator.EnableGenerateFighter();     
+        levelGenerator.EnableGenerateFighter();
+        ShowUI(Gameplay.gameObject, true);
+        ShowUI(MainMenu.gameObject, false);
     }
 
     public void BackToMainMenu()
     {
-        ShowUI(MainMenu, true);
-        ShowUI(Gameplay, false);
+        
         GameManager.Instance.SwitchState(GameState.MainMenu);
         ObjectPooler.Instance.DeSpawnAllFighters();
         levelGenerator.SetBuildingToDefault();
+        ShowUI(Gameplay.gameObject, false);
+        ShowUI(MainMenu.gameObject, true);
     }
 
     public void ChangePlayerColorToRed()
@@ -53,7 +69,7 @@ public  class UIController : MonoBehaviour
         levelGenerator.ChangePlayerColorToBlue();
     }
 
-    private void ShowUI(GameObject uiElement, bool isShow)
+    public void ShowUI(GameObject uiElement, bool isShow)
     {
         uiElement.SetActive(isShow);
     }

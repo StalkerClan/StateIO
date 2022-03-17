@@ -50,20 +50,16 @@ public class LevelGenerator : MonoBehaviour
 
     public void InitializeEnemies()
     {
-        if (enemies != null)
-        {
-            foreach (GameObject enemy in enemies)
-            {
-                Destroy(enemy);
-            }
-            enemiesInfo.Clear();
-        }
-
-        for (int i = 0; i < currentLevel.EnemyInfos.Count; i++)
+        int missingEnemies = currentLevel.EnemyInfos.Count - enemies.Count;
+        Debug.Log(currentLevel.EnemyInfos.Count);
+        Debug.Log(enemies.Count);
+        int loop = missingEnemies <= 0 ? currentLevel.EnemyInfos.Count : currentLevel.EnemyInfos.Count - enemies.Count;
+        int addition = enemies.Count > 0 ? enemies.Count : 0;
+        for (int i = 0; i < loop; i++)
         {
             GameObject newEnemy = Instantiate(enemyPrefab);
             Owner enemyInfo = newEnemy.GetComponent<Owner>();
-            enemyInfo.OwnerStat = UltilitiesManager.Instance.EnemiesStats[i];
+            enemyInfo.OwnerStat = UltilitiesManager.Instance.EnemiesStats[i + addition];
             enemies.Add(newEnemy);
             enemiesInfo.Add(enemyInfo);
         }
@@ -106,8 +102,11 @@ public class LevelGenerator : MonoBehaviour
     }
 
     public void LoadLevel()
-    {       
-        InitializeEnemies();
+    {      
+        if (enemies.Count < currentLevel.EnemyInfos.Count)
+        {
+            InitializeEnemies();
+        }
         SetFocusPoint();
         SetPlayerStartBuildings();
         SetNeutralStartBuildings();
