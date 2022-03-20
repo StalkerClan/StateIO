@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : Singleton<LevelManager>, ISubcriber
@@ -10,12 +8,12 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
     public int LevelID;
 
     [SerializeField]private Level currentLevel;
-    private LevelGenerator levelGenerator;
+    public LevelGenerator levelGenerator;
     public LevelGenerator LevelGenerator { get => levelGenerator; set => levelGenerator = value; }
 
     private void Awake()
     {
-        LevelID = PlayerPrefs.HasKey("LevelID") ? LevelID = PlayerPrefs.GetInt("LevelID") : LevelID = PlayerPrefs.GetInt("LevelID", 1);       
+        LevelID = JSONSaving.Instance.UserData.Level;    
         levelGenerator = FindObjectOfType<LevelGenerator>();
         SubcribeEvent();
         LoadMap();
@@ -50,13 +48,15 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
 
     public void LevelCompleted()
     {
+        GameManager.Instance.SwitchState(GameState.MainMenu);
         levelGenerator.SetPlayerOwnedBuildings();
         currentLevel.SetLevelStatus(true, false, false);
         LevelID++;
+        JSONSaving.Instance.UserData.Level = LevelID;
+        JSONSaving.Instance.SaveData();
         PlayerPrefs.SetInt("LevelID", LevelID);
-        SetLevel();
-        GameManager.Instance.SwitchState(GameState.MainMenu);
-        levelGenerator.LoadLevel();    
+        SetLevel();      
+        levelGenerator.LoadNextLevel();    
     }
 
     public void GameOver()

@@ -115,21 +115,6 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         if (currentFighter >= startFighter) currentFighter = startFighter;
     }
 
-    public void InitializeVariables()
-    {      
-        directionDictionary = new Dictionary<string, VectorSet>();    
-        spacing = 0.12f;
-        multiplier = 2f;
-        degree = 100f;
-        initializingDelay = 0.3f;
-        generatingDelay = 1.8f;
-        startFighter = buildingOwner.OwnerStat.StartFighter;
-        currentFighter = startFighter;
-        isGenerating = false;
-        isMarching = false;
-        active = false;     
-    }
-
     public void GetBuildingStats(Owner owner)
     {
         if (defaultOwner != null)
@@ -142,11 +127,11 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         defaultOwnerType = defaultOwner.OwnerType;
         ownerType = defaultOwnerType;
         spriteRenderer.sprite = defaultOwner.OwnerStat.BuildingIcon;
-        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(defaultOwner.OwnerStat.ColorSet.keyColor));
+        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(defaultOwner.ColorSet.KeyColor));
         spriteRenderer.color = buildingColor;
         timeToGenerate = owner.OwnerStat.TimeToGenerate;
         maxCapacity = owner.OwnerStat.MaxCapacity;
-    }
+    } 
 
     public void GetOwnerType(GlobalVariables.Owner type)
     {
@@ -169,9 +154,24 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         }
     }
 
+    public void InitializeVariables()
+    {
+        directionDictionary = new Dictionary<string, VectorSet>();
+        spacing = 0.12f;
+        multiplier = 2f;
+        degree = 100f;
+        initializingDelay = 0.3f;
+        generatingDelay = 1.8f;
+        startFighter = buildingOwner.OwnerStat.StartFighter;
+        currentFighter = startFighter;
+        isGenerating = false;
+        isMarching = false;
+        active = false;
+    }
+
     public void ChangeBuildingColor(ColorSet newColorSet)
     {
-        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.keyColor));
+        buildingColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.KeyColor));
         spriteRenderer.color = buildingColor;
     }
 

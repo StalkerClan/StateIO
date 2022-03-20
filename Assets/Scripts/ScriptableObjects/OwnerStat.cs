@@ -23,4 +23,7 @@ public class OwnerStat : ScriptableObject
     [Header("Model")]
     public Sprite BuildingIcon;
     public Sprite FighterIcon;
+
+    [Header("User Data")]
+    public bool Initialized = false;
 }

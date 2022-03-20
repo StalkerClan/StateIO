@@ -11,11 +11,19 @@ public static class GlobalVariables
 
     public enum UIType
     {
+        BlockRaycast, 
+        Message,
         MainMenu,
         Gameplay,
         Settings,
         Store,
-        GameUI,
-        GameOverScreen
+        Button,
+        GameOverScreen,
+    }
+
+    public enum UpgradeType
+    {
+        StartUnits,
+        ProduceSpeed,
     }
 }

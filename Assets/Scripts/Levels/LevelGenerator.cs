@@ -15,8 +15,8 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private List<Level> listLevel;
     [SerializeField] private Level currentLevel;
-    [SerializeField] private Owner player;
-    [SerializeField] private Owner neutral;
+    [SerializeField] private Owner playerData;
+    [SerializeField] private Owner neutralData;
     [SerializeField] private List<Owner> enemiesInfo = new List<Owner>();
     [SerializeField] private List<GameObject> enemies = new List<GameObject>();
 
@@ -25,9 +25,9 @@ public class LevelGenerator : MonoBehaviour
 
     public List<Level> ListLevel { get => listLevel; set => listLevel = value; }
     public Level CurrentLevel { get => currentLevel; set => currentLevel = value; }
-    public Owner Player { get => player; set => player = value; }
-    public List<Owner> Enemies { get => enemiesInfo; set => enemiesInfo = value; }
-        
+    public Owner PlayerData { get => playerData; set => playerData = value; }
+    public List<Owner> EnemiesInfo { get => enemiesInfo; set => enemiesInfo = value; }
+
     public void SetFocusPoint()
     {    
         CameraController.Instance.DesiredPosition = currentLevel.FocusPoint;
@@ -36,85 +36,106 @@ public class LevelGenerator : MonoBehaviour
 
     public void InitializePlayer()
     {
-        GameObject newPlayer = Instantiate(playerPrefab);
-        player = newPlayer.GetComponent<Owner>();
+        GameObject player = Instantiate(playerPrefab);
+        this.playerData = player.GetComponent<Owner>();
+        this.playerData.OwnerStat = JSONSaving.Instance.UserStat;
     }
 
     public void InitializeNeutral()
     {
         GameObject newNeutral = Instantiate(neutralPrefab);
-        neutral = newNeutral.GetComponent<Owner>();            
+        neutralData = newNeutral.GetComponent<Owner>();            
     }
 
     public void InitializeEnemies()
     {
-        int missingEnemies = currentLevel.EnemyInfos.Count - enemies.Count;
-        int loop = missingEnemies <= 0 ? currentLevel.EnemyInfos.Count : currentLevel.EnemyInfos.Count - enemies.Count;
-        int addition = enemies.Count > 0 ? enemies.Count : 0;
+        int loop = currentLevel.EnemyInfos.Count - enemies.Count <= 0 ? currentLevel.EnemyInfos.Count : currentLevel.EnemyInfos.Count - enemies.Count;
         for (int i = 0; i < loop; i++)
         {
             GameObject newEnemy = Instantiate(enemyPrefab);
-            Owner enemyInfo = newEnemy.GetComponent<Owner>();
-            enemyInfo.OwnerStat = UltilitiesManager.Instance.EnemiesStats[i + addition];
+            Owner enemyInfo = newEnemy.GetComponent<Owner>();         
+            for (int j = 1; j < UltilitiesManager.Instance.ColorSets.Count; j++)
+            {
+                if (!UltilitiesManager.Instance.ColorSets[j].PlayerUsed)
+                {
+                    if (!UltilitiesManager.Instance.ColorSets[j].EnemyUsed)
+                    {
+                        enemyInfo.ColorSet = UltilitiesManager.Instance.ColorSets[j];
+                        enemyInfo.ColorSet.EnemyUsed = true;
+                        break;
+                    }
+                }                 
+            }
             enemies.Add(newEnemy);
             enemiesInfo.Add(enemyInfo);
         }
     }
 
+    public void SetBuildingDefaultOwner(List<Building> buildings, Owner owner)
+    {
+        owner.HashSetStartBuildings = new HashSet<Building>(buildings);
+        foreach (Building building in buildings)
+        {
+            building.DefaultOwner = owner;
+        }
+        owner.StartBuildings = owner.HashSetStartBuildings.ToList();
+    }
+
+    public void SetBuildingOwner(List<Building> buildings, Owner owner)
+    {
+        owner.HashSetStartBuildings = new HashSet<Building>(buildings);
+        foreach (Building building in buildings)
+        {
+            building.DefaultOwner = owner;
+            building.SetOwner(owner, owner.OwnerType);
+        }
+        owner.StartBuildings = owner.HashSetStartBuildings.ToList();
+    }
+
     public void SetPlayerStartBuildings()
     {
-        player.HashSetStartBuildings = new HashSet<Building>(currentLevel.PlayerStartBuildings);
-        player.StartBuildings = player.HashSetStartBuildings.ToList();
-        foreach (Building building in currentLevel.PlayerStartBuildings)
-        {
-            building.SetOwner(player, player.OwnerType);
-        }
+        SetBuildingDefaultOwner(currentLevel.PlayerStartBuildings, playerData);
+        playerOwnedBuildings = playerData.HashSetStartBuildings.Count;
     }
 
     public void SetNeutralStartBuildings()
     {
-        neutral.HashSetStartBuildings = new HashSet<Building>(currentLevel.NeutralStartBuildings);
-        neutral.StartBuildings = neutral.HashSetStartBuildings.ToList();
-        foreach (Building building in currentLevel.NeutralStartBuildings)
-        {
-            building.SetOwner(neutral, neutral.OwnerType);
-        }
+        SetBuildingDefaultOwner(currentLevel.NeutralStartBuildings, neutralData);
     }
 
     public void SetEnemiesStartBuildings()
     {
         for (int i = 0; i < currentLevel.EnemyInfos.Count; i++)
         {
-            enemiesInfo[i].HashSetStartBuildings = new HashSet<Building>(currentLevel.EnemyInfos[i].EnemyStartBuildings);
-            enemiesInfo[i].StartBuildings = enemiesInfo[i].HashSetStartBuildings.ToList();
-            foreach (Building building in currentLevel.EnemyInfos[i].EnemyStartBuildings)
+            SetBuildingDefaultOwner(currentLevel.EnemyInfos[i].EnemyStartBuildings, enemiesInfo[i]);                          
+            foreach (Enemy enemy in enemiesInfo)
             {
-                building.SetOwner(enemiesInfo[i], enemiesInfo[i].OwnerType);
+                enemiesOwnedBuildings += enemy.StartBuildings.Count;
             }
         }           
+    }   
+
+    public void LoadCurrentLevel()
+    {
+        SetFocusPoint();
+        SetPlayerStartBuildings();
+        SetEnemiesStartBuildings();
+        SetNeutralStartBuildings();
     }
 
-    public void LoadLevel()
-    {      
+    public void LoadNextLevel()
+    {
         if (enemies.Count < currentLevel.EnemyInfos.Count)
         {
             InitializeEnemies();
         }
         SetFocusPoint();
-        SetPlayerStartBuildings();
-        SetNeutralStartBuildings();
-        SetEnemiesStartBuildings();
-    }
-    public void ChangePlayerColorToBlue()
-    {
-        player.ChangeColor(UltilitiesManager.Instance.ColorSets[0]);
-        enemiesInfo[0].ChangeColor(UltilitiesManager.Instance.ColorSets[1]);
-    }
-
-    public void ChangePlayerColorToRed()
-    {
-        player.ChangeColor(UltilitiesManager.Instance.ColorSets[1]);
-        enemiesInfo[0].ChangeColor(UltilitiesManager.Instance.ColorSets[0]);
+        SetBuildingOwner(currentLevel.PlayerStartBuildings, playerData);
+        SetBuildingOwner(currentLevel.NeutralStartBuildings, neutralData);
+        for (int i = 0; i < currentLevel.EnemyInfos.Count; i++)
+        {
+            SetBuildingOwner(currentLevel.EnemyInfos[i].EnemyStartBuildings, enemiesInfo[i]);
+        }
     }
    
     public void EnableGenerateFighter()
@@ -122,12 +143,12 @@ public class LevelGenerator : MonoBehaviour
         StartCoroutine(StartGeneratingFighter());
     }
 
-    public void DisableGenerateFighter()
+    public void EnableGenerateFighter(List<Building> buildings, bool active, bool isGenerating)
     {
-        foreach (Building building in currentLevel.PlayableBuildings)
+        foreach (Building building in buildings)
         {
-            building.Active = false;
-            building.IsGenerating = false;
+            building.Active = active;
+            building.IsGenerating = isGenerating;
         }
     }
 
@@ -136,11 +157,7 @@ public class LevelGenerator : MonoBehaviour
         WaitForSeconds delay = Utilities.GetWaitForSeconds(1.5f);
         yield return delay;
 
-        foreach (Building building in currentLevel.PlayableBuildings)
-        {
-            building.Active = true;
-            building.IsGenerating = true;
-        }
+        EnableGenerateFighter(currentLevel.PlayableBuildings, true, true);
     }
 
     public void SetBuildingToDefault()
@@ -155,7 +172,8 @@ public class LevelGenerator : MonoBehaviour
     {
         foreach (Building building in currentLevel.PlayableBuildings)
         {
-            building.SetOwner(player, player.OwnerType);
+            building.DefaultOwner = playerData;
+            building.SetOwner(playerData, playerData.OwnerType);
         }
     }
 
@@ -169,7 +187,7 @@ public class LevelGenerator : MonoBehaviour
             enemiesOwnedBuildings += enemy.StartBuildings.Count;
         }
 
-        playerOwnedBuildings = player.StartBuildings.Count;
+        playerOwnedBuildings = playerData.StartBuildings.Count;
         if (enemiesOwnedBuildings <= 0)
         {
             OnEnemiesOutOfBuildings?.Invoke();
@@ -191,21 +209,15 @@ public class LevelGenerator : MonoBehaviour
         {
             if (level.Status.Completed)
             {
-                foreach (Building building in level.PlayableBuildings)
-                {
-                    building.SetOwner(player, player.OwnerType);
-                }
+                SetBuildingDefaultOwner(level.PlayableBuildings, playerData);
             }
             if (level.Status.IsPlaying)
             {
-                LoadLevel();
+                LoadCurrentLevel();
             }
             if (level.Status.Locked)
             {
-                foreach (Building building in level.PlayableBuildings)
-                {
-                    building.SetOwner(neutral, neutral.OwnerType);
-                }
+                SetBuildingDefaultOwner(level.PlayableBuildings, neutralData);
             }
         }
     }

@@ -11,6 +11,7 @@ public abstract class Owner : MonoBehaviour
     public event Action<ColorSet> OnChangingColorSet = delegate { };
 
     public OwnerStat ownerStat;
+    public ColorSet ColorSet;
     public GlobalVariables.Owner ownerType;
     public List<Building> startBuildings;
     private HashSet<Building> hashSetStartBuildings;
@@ -21,8 +22,12 @@ public abstract class Owner : MonoBehaviour
     public List<Building> StartBuildings { get => startBuildings; set => startBuildings = value; }
     public HashSet<Building> HashSetStartBuildings { get => hashSetStartBuildings; set => hashSetStartBuildings = value; }
 
-    private void Start()
+   private void Start()
     {
+        if (ownerStat.ColorSet != null)
+        {
+            ColorSet = ownerStat.ColorSet;
+        }
         startBuildings = hashSetStartBuildings.ToList();
     }
 
@@ -41,9 +46,9 @@ public abstract class Owner : MonoBehaviour
         startBuildings = hashSetStartBuildings.ToList();
     }
 
-    public  void ChangeColor(ColorSet colorSet)
+    public virtual void ChangeColor(ColorSet newColorSet)
     {
-        ownerStat.ColorSet = colorSet;
-        OnChangingColorSet?.Invoke(colorSet);
+        ColorSet = newColorSet;       
+        OnChangingColorSet?.Invoke(newColorSet);
     }
 }
