@@ -10,6 +10,7 @@ public abstract class Owner : MonoBehaviour
     public event Action<Building> OnRemovedBuilding = delegate { };
     public event Action<ColorSet> OnChangingColorSet = delegate { };
 
+
     public OwnerStat ownerStat;
     public ColorSet ColorSet;
     public GlobalVariables.Owner ownerType;
@@ -33,9 +34,11 @@ public abstract class Owner : MonoBehaviour
 
     public void AddBuilding(Building building)
     {
+        Debug.Log("Haha");
         hashSetStartBuildings.Add(building);
         OnAddedBuilding?.Invoke(building);
         building.GetBuildingStats(this);
+        Debug.Log(this.gameObject.name);
         startBuildings = hashSetStartBuildings.ToList();
     }
 

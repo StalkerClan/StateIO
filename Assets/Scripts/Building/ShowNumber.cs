@@ -27,8 +27,8 @@ public class ShowNumber : MonoBehaviour, ISubcriber
         building.OnChangingNumberOfFighters -= ShowNumberOfFighter;
     }
 
-    private void ShowNumberOfFighter(int fighter)
+    private void ShowNumberOfFighter(float fighter)
     {
-        textMesh.text = building.CurrentFighter.ToString();
+        textMesh.text = ((int) fighter).ToString();
     }
 }

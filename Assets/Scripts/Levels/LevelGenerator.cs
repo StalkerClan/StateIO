@@ -100,6 +100,10 @@ public class LevelGenerator : MonoBehaviour
 
     public void SetNeutralStartBuildings()
     {
+        foreach (Building building in currentLevel.NeutralStartBuildings)
+        {
+            
+        }
         SetBuildingDefaultOwner(currentLevel.NeutralStartBuildings, neutralData);
     }
 
@@ -119,8 +123,8 @@ public class LevelGenerator : MonoBehaviour
     {
         SetFocusPoint();
         SetPlayerStartBuildings();
-        SetEnemiesStartBuildings();
         SetNeutralStartBuildings();
+        SetEnemiesStartBuildings();
     }
 
     public void LoadNextLevel()
@@ -188,6 +192,7 @@ public class LevelGenerator : MonoBehaviour
         }
 
         playerOwnedBuildings = playerData.StartBuildings.Count;
+
         if (enemiesOwnedBuildings <= 0)
         {
             OnEnemiesOutOfBuildings?.Invoke();
@@ -207,17 +212,23 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (Level level in listLevel)
         {
-            if (level.Status.Completed)
+            LevelStatus.Status status = level.LevelStatus.CurrentStatus;
+            switch (status)
             {
-                SetBuildingDefaultOwner(level.PlayableBuildings, playerData);
-            }
-            if (level.Status.IsPlaying)
-            {
-                LoadCurrentLevel();
-            }
-            if (level.Status.Locked)
-            {
-                SetBuildingDefaultOwner(level.PlayableBuildings, neutralData);
+                case LevelStatus.Status.Completed:
+                    SetBuildingDefaultOwner(level.PlayableBuildings, playerData);
+                    break;
+                case LevelStatus.Status.IsPlaying:
+                    LoadCurrentLevel();
+                    break;
+                case LevelStatus.Status.Locked:
+                    foreach (Building building in level.PlayableBuildings)
+                    {
+                        building.DefaultOwner = neutralData;
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }

@@ -14,12 +14,12 @@ public class Upgrade : MonoBehaviour
 
     public void Start()
     {
-        SetUpgradeData();
+        ShowUpgradeData();
     }
 
-    public void SetUpgradeData()
+    public void ShowUpgradeData()
     {
-        UpgradeNumber.text = UpgradeData.BaseValue.ToString();
+        UpgradeNumber.text = UpgradeData.Value.ToString();
         CurrentLevel.text = "LVL " + UpgradeData.Level.ToString();
         UpgradeCost.text = UpgradeData.Cost.ToString();
     }

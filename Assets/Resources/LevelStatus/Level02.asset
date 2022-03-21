@@ -12,6 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 112e1552dd7271d4a9440175be36afad, type: 3}
   m_Name: Level02
   m_EditorClassIdentifier: 
-  Completed: 0
-  IsPlaying: 0
-  Locked: 1
+  CurrentStatus: 2

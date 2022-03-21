@@ -928,6 +928,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8025022596715897001, guid: 5819a6f0e83ec244a9786ca70f3f4321, type: 3}
+      propertyPath: LevelStatus
+      value: 
+      objectReference: {fileID: 11400000, guid: 420f81ccb345e9f438bd6d58795924fe, type: 2}
+    - target: {fileID: 8025022596715897001, guid: 5819a6f0e83ec244a9786ca70f3f4321, type: 3}
       propertyPath: EnemyInfos.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -1335,6 +1339,10 @@ PrefabInstance:
       propertyPath: CamZoomSize
       value: 7.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8025022596715897001, guid: 5819a6f0e83ec244a9786ca70f3f4321, type: 3}
+      propertyPath: LevelStatus
+      value: 
+      objectReference: {fileID: 11400000, guid: 6da7f06371f90b34f9384568c59f4268, type: 2}
     - target: {fileID: 8025022596715897001, guid: 5819a6f0e83ec244a9786ca70f3f4321, type: 3}
       propertyPath: EnemyInfos.Array.size
       value: 1
@@ -5180,6 +5188,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8025022596715897001, guid: 5819a6f0e83ec244a9786ca70f3f4321, type: 3}
+      propertyPath: LevelStatus
+      value: 
+      objectReference: {fileID: 11400000, guid: e7078c04e17146b42aa4777adada3d6a, type: 2}
+    - target: {fileID: 8025022596715897001, guid: 5819a6f0e83ec244a9786ca70f3f4321, type: 3}
       propertyPath: EnemyInfos.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -5419,6 +5431,10 @@ PrefabInstance:
       propertyPath: CamZoomSize
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 8025022596715897001, guid: 5819a6f0e83ec244a9786ca70f3f4321, type: 3}
+      propertyPath: LevelStatus
+      value: 
+      objectReference: {fileID: 11400000, guid: a6769840708a5ad42958775f8181e6df, type: 2}
     - target: {fileID: 8025022596715897001, guid: 5819a6f0e83ec244a9786ca70f3f4321, type: 3}
       propertyPath: EnemyInfos.Array.size
       value: 2

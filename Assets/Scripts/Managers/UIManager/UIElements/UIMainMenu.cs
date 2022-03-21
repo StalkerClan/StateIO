@@ -12,7 +12,11 @@ public class UIMainMenu : UICanvas
 
     public override void OnInit()
     {
-        base.OnInit();
+        base.OnInit();    
+    }
+
+    public void OpenPanel()
+    {
         if (JSONSaving.Instance.UserData.Level > 1)
         {
             PColorSwitcher.SetActive(false);
@@ -41,5 +45,4 @@ public class UIMainMenu : UICanvas
         LevelManager.Instance.LevelGenerator.PlayerData.ChangeColor(UltilitiesManager.Instance.ColorSets[2]);
         LevelManager.Instance.LevelGenerator.EnemiesInfo[0].ChangeColor(UltilitiesManager.Instance.ColorSets[1]);
     }
-  
 }

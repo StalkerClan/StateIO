@@ -20,14 +20,17 @@ public class JSONSaving : Singleton<JSONSaving>
         LoadUserData();
     }
 
+    private void OnDisable()
+    {
+        SaveData();
+    }
+
     private void LoadUserData()
     {
         userStat = Resources.Load<OwnerStat>("OwnerStat/UserStat");
         if (!userStat.Initialized)
         {
-            userData = new UserData(1, userStat.ColorSet, userStat.TimeToGenerate, 
-                userStat.StartFighter, userStat.MaxCapacity, userStat.Currency, 
-                userStat.DefaultMoveSpeed, userStat.BuildingIcon, userStat.FighterIcon);
+            userData = new UserData(1, userStat);
             userStat.Initialized = true;
             SaveData();
         }

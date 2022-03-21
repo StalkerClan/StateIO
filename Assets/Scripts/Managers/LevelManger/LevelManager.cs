@@ -13,7 +13,7 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
 
     private void Awake()
     {
-        LevelID = JSONSaving.Instance.UserData.Level;    
+        LevelID = JSONSaving.Instance.UserData.Level;
         levelGenerator = FindObjectOfType<LevelGenerator>();
         SubcribeEvent();
         LoadMap();
@@ -43,20 +43,19 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
     public void SetLevel()
     {
         currentLevel = levelGenerator.CurrentLevel = levelGenerator.ListLevel[LevelID - 1];
-        currentLevel.SetLevelStatus(false, true, false);
+        currentLevel.SetLevelStatus(LevelStatus.Status.IsPlaying);
     }
 
     public void LevelCompleted()
     {
-        GameManager.Instance.SwitchState(GameState.MainMenu);
         levelGenerator.SetPlayerOwnedBuildings();
-        currentLevel.SetLevelStatus(true, false, false);
+        currentLevel.SetLevelStatus(LevelStatus.Status.Completed);
         LevelID++;
         JSONSaving.Instance.UserData.Level = LevelID;
-        JSONSaving.Instance.SaveData();
         PlayerPrefs.SetInt("LevelID", LevelID);
         SetLevel();      
-        levelGenerator.LoadNextLevel();    
+        levelGenerator.LoadNextLevel();
+        GameManager.Instance.SwitchState(GameState.MainMenu);
     }
 
     public void GameOver()

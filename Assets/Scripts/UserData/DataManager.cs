@@ -1,20 +1,21 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DataManager : MonoBehaviour
+public class DataManager : Singleton<DataManager>
 {
-    private OwnerStat userStat;
-
-    public OwnerStat UserStat { get => userStat; set => userStat = value; }
+    public UserData UserData;
+    public Player Player;
 
     private void Awake()
     {
-        LoadUserData();
+        LoadGameData();
     }
 
-    public void LoadUserData()
+    public void LoadGameData()
     {
-        userStat = Resources.Load<OwnerStat>("OwnerStat/UserStat");
+        UserData = JSONSaving.Instance.UserData;
+        Player = LevelManager.Instance.LevelGenerator.PlayerData as Player;
     }
 }

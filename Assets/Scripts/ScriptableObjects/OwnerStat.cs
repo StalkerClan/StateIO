@@ -9,7 +9,8 @@ public class OwnerStat : ScriptableObject
     [Header("Stats")]
     public ColorSet ColorSet;
 
-    public float TimeToGenerate;
+    public float ProduceSpeed;
+    public float FighterPerTick;
 
     public int StartFighter;
     public int MaxCapacity;

@@ -7,7 +7,7 @@ public class MainMenu : BaseGameState
 
     public override void EnterState(GameManager gameManager)
     {
-        UIManager.Instance.OpenUI(GlobalVariables.UIType.MainMenu); 
+        (UIManager.Instance.OpenUI(GlobalVariables.UIType.MainMenu) as UIMainMenu).OpenPanel(); 
         ObjectPooler.Instance.DeSpawnAllFighters();
     }
 

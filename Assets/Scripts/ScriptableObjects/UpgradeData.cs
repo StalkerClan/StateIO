@@ -9,5 +9,5 @@ public class UpgradeData : ScriptableObject
 {
     public int Level = 1;
     public int Cost;
-    public float BaseValue;
+    public float Value;
 }
