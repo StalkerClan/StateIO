@@ -240,7 +240,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &3683008953655838248
 MonoBehaviour:
@@ -2010,7 +2010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4419ba13454ff04e92c0db5f70ff9f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Gold: {fileID: 5849743543653773824}
+  TextInfo: {fileID: 5849743543653773824}
 --- !u!1 &1996331319076165001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2095,6 +2095,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5805577592280474308}
+  - component: {fileID: 8167471689319350889}
   m_Layer: 0
   m_Name: Level
   m_TagString: Untagged
@@ -2123,6 +2124,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 315.1129, y: 93.903}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8167471689319350889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139302701872944422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c688f0cbcfbc7a24191e38acaf46a94c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TextInfo: {fileID: 1989141633279470226}
 --- !u!1 &2173379773725204285
 GameObject:
   m_ObjectHideFlags: 0
@@ -2417,7 +2431,6 @@ MonoBehaviour:
     Level: 0
     UserStat: {fileID: 0}
   Player: {fileID: 0}
-  Level: 0
 --- !u!1 &2767770505941564548
 GameObject:
   m_ObjectHideFlags: 0
@@ -3230,7 +3243,7 @@ GameObject:
   - component: {fileID: 6318786107433407186}
   - component: {fileID: 1989141633279470226}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: TxtLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

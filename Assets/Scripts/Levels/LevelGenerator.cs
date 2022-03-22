@@ -100,10 +100,6 @@ public class LevelGenerator : MonoBehaviour
 
     public void SetNeutralStartBuildings()
     {
-        foreach (Building building in currentLevel.NeutralStartBuildings)
-        {
-            
-        }
         SetBuildingDefaultOwner(currentLevel.NeutralStartBuildings, neutralData);
     }
 
@@ -230,6 +226,14 @@ public class LevelGenerator : MonoBehaviour
                 default:
                     break;
             }
+        }
+    }
+
+    public void UnParentAllLevels()
+    {
+        foreach (Level level in listLevel)
+        {
+            level.transform.parent = null;
         }
     }
 }

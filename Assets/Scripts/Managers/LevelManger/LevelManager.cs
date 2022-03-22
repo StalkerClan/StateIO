@@ -4,11 +4,15 @@ using UnityEngine;
 public class LevelManager : Singleton<LevelManager>, ISubcriber
 {
     public event Action<int> OnShowingLevelID = delegate { };
+    public event Action<int> OnAddingCurrency = delegate { };
 
+    private LevelGenerator levelGenerator;
+    public Level currentLevel;
+    public Player Player;
+    
     public int LevelID;
+    public int PlayerCurrency;
 
-    [SerializeField]private Level currentLevel;
-    public LevelGenerator levelGenerator;
     public LevelGenerator LevelGenerator { get => levelGenerator; set => levelGenerator = value; }
 
     private void Awake()
@@ -17,6 +21,8 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
         levelGenerator = FindObjectOfType<LevelGenerator>();
         SubcribeEvent();
         LoadMap();
+        Player = levelGenerator.PlayerData as Player;
+        PlayerCurrency = Player.OwnerStat.Currency;
     }
 
     private void OnDisable()
@@ -48,18 +54,22 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
 
     public void LevelCompleted()
     {
+        Player.OwnerStat.Currency = Formula.WinningGoldEarned(LevelID);
         levelGenerator.SetPlayerOwnedBuildings();
         currentLevel.SetLevelStatus(LevelStatus.Status.Completed);
         LevelID++;
         JSONSaving.Instance.UserData.Level = LevelID;
-        PlayerPrefs.SetInt("LevelID", LevelID);
         SetLevel();      
         levelGenerator.LoadNextLevel();
         GameManager.Instance.SwitchState(GameState.MainMenu);
+        OnShowingLevelID?.Invoke(LevelID);
+        OnAddingCurrency?.Invoke(Player.OwnerStat.Currency);
     }
 
     public void GameOver()
     {
+        Player.OwnerStat.Currency = Formula.LoseGoldEarned(LevelID);
+        OnAddingCurrency?.Invoke(Player.OwnerStat.Currency);
         GameManager.Instance.SwitchState(GameState.GameOver);
     }
 }

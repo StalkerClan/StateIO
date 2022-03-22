@@ -48,9 +48,7 @@ public class JSONSaving : Singleton<JSONSaving>
 
     public void SaveData()
     {
-        Debug.Log("Saving Data at " + persistentPath);
         string json = JsonUtility.ToJson(userData);
-        Debug.Log(json);
         using StreamWriter writer = new StreamWriter(persistentPath);
         writer.Write(json);
     }
@@ -60,6 +58,5 @@ public class JSONSaving : Singleton<JSONSaving>
         using StreamReader reader = new StreamReader(persistentPath);
         string json = reader.ReadToEnd();
         userData = JsonUtility.FromJson<UserData>(json);
-        Debug.Log(userData.ToString());
     }
 }

@@ -34,11 +34,9 @@ public abstract class Owner : MonoBehaviour
 
     public void AddBuilding(Building building)
     {
-        Debug.Log("Haha");
         hashSetStartBuildings.Add(building);
         OnAddedBuilding?.Invoke(building);
         building.GetBuildingStats(this);
-        Debug.Log(this.gameObject.name);
         startBuildings = hashSetStartBuildings.ToList();
     }
 

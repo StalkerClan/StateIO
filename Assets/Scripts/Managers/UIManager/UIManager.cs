@@ -26,10 +26,10 @@ public class UIManager : Singleton<UIManager>
 
     public UICanvas OpenUI(GlobalVariables.UIType type)
     {
-        if (LastActiveCanvas != null)
-        {
-            LastActiveCanvas.OnClose();
-        }
+        //if (LastActiveCanvas != null)
+        //{
+        //    LastActiveCanvas.OnClose();
+        //}
 
         UICanvas desiredCanvas = null;
 
@@ -77,4 +77,18 @@ public class UIManager : Singleton<UIManager>
             return desiredCanvas.IsActive();
         }
     }
+
+    public UICanvas GetUI(GlobalVariables.UIType type)
+    {
+        UICanvas desiredCanvas = null;
+        if (!CanvasDict.ContainsKey(type) || CanvasDict[type] == null)
+        {
+            return null;
+        }
+        else
+        {
+            desiredCanvas = CanvasDict[type];
+        }
+        return desiredCanvas;
+    }    
 }

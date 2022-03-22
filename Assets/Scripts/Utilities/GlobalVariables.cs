@@ -14,11 +14,12 @@ public static class GlobalVariables
         BlockRaycast, 
         Message,
         MainMenu,
-        Gameplay,
         Settings,
-        Store,
+        Store, 
+        Gameplay,
+        Blocker,
+        GameOverScreen, 
         Button,
-        GameOverScreen,
     }
 
     public enum UpgradeType

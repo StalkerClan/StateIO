@@ -5,27 +5,33 @@ using UnityEngine;
 
 public static class Formula 
 {
+    public static int baseGoldRequired = 50;
+    public static int additionFighter = 1; 
+    public static float baseProduceSpeed = 1f;
+    public static int goldBase = 200;
+
     public static int GoldRequired(int level)
     {
-        int baseGoldEarned = 50;
-        return baseGoldEarned * (level - 1) + 95;
+        return baseGoldRequired * (level - 1) + 95;
     }
 
-    public static int GoldEarned(int level)
+    public static int WinningGoldEarned(int level)
     {
-        return 0;
+        return goldBase + 160 * level;
+    }
+
+    public static int LoseGoldEarned(int level)
+    {
+        return (goldBase + 160 * (level - 1)) / 10;
     }
 
     public static int StartUnits(int startUnits)
     {
-        int addition = 1;
-        return startUnits += addition; 
+        return startUnits += additionFighter; 
     }
 
     public static float ProduceSpeed(int level)
     {
-        //level = level == 1 ? 2 : level;
-        float baseProduceSpeed = 1f;
         float value = baseProduceSpeed + (level) * 0.075f;
         double rounded = Math.Round(value, 2);
         return ((float) rounded);

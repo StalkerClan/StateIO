@@ -6,11 +6,12 @@ using System;
 
 public class UpgradeSystem : Singleton<UpgradeSystem>
 {
+    public event Action<int> OnBuyingUpgrade = delegate { };
+
     public StartUnits StartUnits;
     public ProduceSpeed ProduceSpeed;
     public UserData UserData;
     public Player Player;
-    public int Level;
 
     private void Awake()
     {
@@ -20,9 +21,8 @@ public class UpgradeSystem : Singleton<UpgradeSystem>
 
     public void FetchData()
     {
-        UserData = DataManager.Instance.UserData;
-        Player = DataManager.Instance.Player;
-        Level = UserData.Level;
+        UserData = JSONSaving.Instance.UserData;
+        Player = LevelManager.Instance.LevelGenerator.PlayerData as Player;
     }
 
     public void GetUpgrades()
@@ -46,9 +46,14 @@ public class UpgradeSystem : Singleton<UpgradeSystem>
     public void SetUpgrade(Upgrade upgrade, UpgradeData upgradeData, float value)
     {
         upgradeData = upgrade.UpgradeData;
-        upgradeData.Level++;
-        upgradeData.Value = value;
-        upgradeData.Cost = Formula.GoldRequired(upgradeData.Level);
-        upgrade.ShowUpgradeData();
+        if (upgradeData.Cost < Player.OwnerStat.Currency) 
+        {
+            Player.OwnerStat.Currency -= upgradeData.Cost;
+            upgradeData.Level++;
+            upgradeData.Value = value;
+            upgradeData.Cost = Formula.GoldRequired(upgradeData.Level);
+            upgrade.ShowUpgradeData();
+            OnBuyingUpgrade?.Invoke(Player.OwnerStat.Currency);
+        }      
     }
 }

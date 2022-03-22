@@ -9,7 +9,11 @@ public class UltilitiesManager : Singleton<UltilitiesManager>
 
     private void Awake()
     {
-        ColorSet[] colorSets = Resources.LoadAll<ColorSet>("ColorSets/");
-        ColorSets = colorSets.ToList();
+        ColorSet[] colorSetList = Resources.LoadAll<ColorSet>("ColorSets/");
+        ColorSets = colorSetList.ToList();
+        foreach (ColorSet colorSet in ColorSets)
+        {
+            colorSet.EnemyUsed = false;
+        }
     }
 }

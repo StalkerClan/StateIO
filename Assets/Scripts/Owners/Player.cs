@@ -22,11 +22,13 @@ public class Player : Owner
 
     public void UpgradeStartUnits(int value)
     {
+        OwnerStat.StartFighter = value;
         OnUpgradeStartUnits?.Invoke(value);
     }
 
     public void UpgradeProduceSpeed(float value)
     {
+        OwnerStat.ProduceSpeed = value;
         OnUpgradeProduceSpeed?.Invoke(value);
     }
 }

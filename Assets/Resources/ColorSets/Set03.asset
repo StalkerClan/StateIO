@@ -16,5 +16,5 @@ MonoBehaviour:
   FirstColor: {r: 0.97647065, g: 0.5137255, b: 0.43137258, a: 0}
   SecondColor: {r: 0.9607844, g: 0.20784315, b: 0.078431375, a: 0}
   PlayerUsed: 0
-  EnemyUsed: 0
+  EnemyUsed: 1
   Locked: 1

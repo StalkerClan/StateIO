@@ -5,9 +5,16 @@ using UnityEngine.EventSystems;
 
 public class BackToMainMenu : MonoBehaviour, IPointerClickHandler
 {
-    public void OnPointerClick(PointerEventData eventData)
+    public  void OnPointerClick(PointerEventData eventData)
     {
-        GameManager.Instance.SwitchState(GameState.MainMenu);
-        LevelManager.Instance.LevelGenerator.SetBuildingToDefault();
+        if (UIManager.Instance.LastActiveCanvas is UIGameplay)
+        {
+            (UIManager.Instance.LastActiveCanvas as UIGameplay).OnExitGamePlay();
+        }
+        else
+        {
+            GameManager.Instance.SwitchState(GameState.MainMenu);
+            LevelManager.Instance.LevelGenerator.SetBuildingToDefault();
+        }     
     }
 }
