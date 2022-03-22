@@ -229,11 +229,11 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    public void UnParentAllLevels()
+    public void ResetParentAllLevels()
     {
         foreach (Level level in listLevel)
         {
-            level.transform.parent = null;
+            level.transform.parent = this.transform;
         }
     }
 }

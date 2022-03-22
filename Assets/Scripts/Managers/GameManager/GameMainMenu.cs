@@ -10,7 +10,6 @@ public class MainMenu : BaseGameState
         UIManager.Instance.CloseUI(GlobalVariables.UIType.Blocker);
         UIManager.Instance.CloseUI(GlobalVariables.UIType.Gameplay);
         (UIManager.Instance.OpenUI(GlobalVariables.UIType.MainMenu) as UIMainMenu).OpenPanel(); 
-        ObjectPooler.Instance.DeSpawnAllFighters();
     }
 
     public override void UpdateState(GameManager gameManager)
