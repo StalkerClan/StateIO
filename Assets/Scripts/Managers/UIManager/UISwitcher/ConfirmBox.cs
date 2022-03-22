@@ -6,9 +6,9 @@ public class ConfirmBox : MonoBehaviour
 {
     public void Confirm()
     {
+        LevelManager.Instance.LevelGenerator.UnParentAllLevels();
         GameManager.Instance.SwitchState(GameState.MainMenu);
         LevelManager.Instance.LevelGenerator.SetBuildingToDefault();
-        LevelManager.Instance.LevelGenerator.UnParentAllLevels();
     }
 
     public void Cancel()
