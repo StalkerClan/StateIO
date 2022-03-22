@@ -7,7 +7,7 @@ public class GameStart : BaseGameState
 {
     public override void EnterState(GameManager gameManager)
     {
-        UIManager.Instance.UIController.ShowGameplay();
+        UIManager.Instance.OpenUI(GlobalVariables.UIType.Gameplay);
         LevelManager.Instance.LevelGenerator.EnableGenerateFighter();
     }
 

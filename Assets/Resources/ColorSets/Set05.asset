@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6948b648f1ecae74aaab7135268ad774, type: 3}
+  m_Name: Set05
+  m_EditorClassIdentifier: 
+  KeyColor: {r: 0.40000004, g: 0, b: 0.25490198, a: 0}
+  FirstColor: {r: 0.96470594, g: 0.59607846, b: 0.73333335, a: 0}
+  SecondColor: {r: 0.9528302, g: 0.27326447, b: 0.5262941, a: 0}
+  PlayerUsed: 0
+  EnemyUsed: 0
+  Locked: 1

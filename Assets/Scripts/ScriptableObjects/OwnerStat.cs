@@ -9,7 +9,8 @@ public class OwnerStat : ScriptableObject
     [Header("Stats")]
     public ColorSet ColorSet;
 
-    public float TimeToGenerate;
+    public float ProduceSpeed;
+    public float FighterPerTick;
 
     public int StartFighter;
     public int MaxCapacity;
@@ -23,4 +24,7 @@ public class OwnerStat : ScriptableObject
     [Header("Model")]
     public Sprite BuildingIcon;
     public Sprite FighterIcon;
+
+    [Header("User Data")]
+    public bool Initialized = false;
 }

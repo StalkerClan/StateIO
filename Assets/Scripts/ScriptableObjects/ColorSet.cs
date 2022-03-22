@@ -4,9 +4,14 @@ using UnityEngine;
 public class ColorSet : ScriptableObject
 {
     [Header("Key Color")]
-    public Color keyColor;
+    public Color KeyColor;
 
     [Header("Lerp Colors")]
-    public Color firstColor;
-    public Color secondColor;
+    public Color FirstColor;
+    public Color SecondColor;
+
+    [Header("Status")]
+    public bool PlayerUsed = false;
+    public bool EnemyUsed = false;
+    public bool Locked = true;
 }

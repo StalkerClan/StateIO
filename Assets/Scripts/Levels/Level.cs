@@ -16,22 +16,10 @@ public class Level : MonoBehaviour
     public List<EnemyInfo> EnemyInfos;    
     public List<Building> NeutralStartBuildings;
     public List<Building> PlayableBuildings;
-    public LevelStatus Status;
+    public LevelStatus LevelStatus;
 
-    private void OnEnable()
+    public void SetLevelStatus(LevelStatus.Status status)
     {
-        PlayableBuildings.AddRange(PlayerStartBuildings);
-        foreach (EnemyInfo enemyInfo in EnemyInfos)
-        {
-            PlayableBuildings.AddRange(enemyInfo.EnemyStartBuildings);
-        }
-        PlayableBuildings.AddRange(NeutralStartBuildings);
-    }
-
-    public void SetLevelStatus(bool completed, bool isPlaying, bool locked)
-    {
-        Status.Completed = completed;
-        Status.IsPlaying = isPlaying;
-        Status.Locked = locked;
+        LevelStatus.CurrentStatus = status;
     }
 }

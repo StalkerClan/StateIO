@@ -66,8 +66,8 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
         }
         stateOwner = owner;
         stateOwner.OnChangingColorSet += ChangeStateColor;
-        firstColor = Utilities.HexToColor(Utilities.ColorToHex(stateOwner.OwnerStat.ColorSet.firstColor));
-        secondColor = Utilities.HexToColor(Utilities.ColorToHex(stateOwner.OwnerStat.ColorSet.secondColor));
+        firstColor = Utilities.HexToColor(Utilities.ColorToHex(stateOwner.ColorSet.FirstColor));
+        secondColor = Utilities.HexToColor(Utilities.ColorToHex(stateOwner.ColorSet.SecondColor));
         buildingMaxCapacity = building.MaxCapacity;
         float percent = currentFighter / buildingMaxCapacity;
         currentColor = Color.Lerp(firstColor, secondColor, percent);
@@ -75,10 +75,9 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
     }
 
     public void ChangeStateColor(ColorSet newColorSet)
-    {
-       
-        firstColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.firstColor));
-        secondColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.secondColor));
+    {   
+        firstColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.FirstColor));
+        secondColor = Utilities.HexToColor(Utilities.ColorToHex(newColorSet.SecondColor));
         buildingMaxCapacity = building.MaxCapacity;
         float percent = currentFighter / buildingMaxCapacity;
         currentColor = Color.Lerp(firstColor, secondColor, percent);

@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    [SerializeField] private BaseGameState currentState;
+    public BaseGameState currentState;
 
     private void Awake()
     {
         currentState = GameState.MainMenu;
+        currentState.EnterState(this);
     }
 
     private void Update()

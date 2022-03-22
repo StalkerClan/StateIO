@@ -33,7 +33,6 @@ public class ObjectPooler : Singleton<ObjectPooler>
             Queue<GameObject> objectPool = new Queue<GameObject>();
             for (int i = 0; i < pool.capacity; i++)
             {
-
                 GameObject gameObject = Instantiate(pool.prefab, pool.objectHolder.transform);
                 gameObject.SetActive(false);
                 objectPool.Enqueue(gameObject);
