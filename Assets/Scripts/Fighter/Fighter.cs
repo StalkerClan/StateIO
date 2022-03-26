@@ -9,7 +9,7 @@ public class Fighter : MonoBehaviour, IInitializeVariables
 
     [SerializeField] private Vector3 moveDirection;
 
-    [SerializeField] private string targetID;
+    [SerializeField] private Building targetBuilding;
 
     [SerializeField] private float moveSpeed;
     private float defaultMoveSpeed;
@@ -17,7 +17,7 @@ public class Fighter : MonoBehaviour, IInitializeVariables
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; set => spriteRenderer = value; }
     public Owner Owner { get => owner; set => owner = value; }
     public Vector3 MoveDirection { get => moveDirection; set => moveDirection = value; }
-    public string TargetID { get => targetID; set => targetID = value; }
+    public Building TargetBuilding { get => targetBuilding; set => targetBuilding = value; }
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public float DefaultMoveSpeed { get => defaultMoveSpeed; set => defaultMoveSpeed = value; }
 
@@ -57,7 +57,7 @@ public class Fighter : MonoBehaviour, IInitializeVariables
     {
         if (collision.TryGetComponent(out CollideDetector collideDetector))
         {
-            if (targetID.Equals(collideDetector.BuildingID))
+            if (targetBuilding.Equals(collideDetector.Building))
             {
                 Vector3 direction = (collision.transform.position - this.transform.position).normalized;
                 moveDirection = direction;
@@ -67,7 +67,7 @@ public class Fighter : MonoBehaviour, IInitializeVariables
 
         if (collision.TryGetComponent(out Building building))
         {
-            if (targetID.Equals(building.BuildingID))
+            if (targetBuilding.Equals(building))
             {
                 IReceiver receiver = collision.GetComponent<IReceiver>();
                 if (receiver != null)

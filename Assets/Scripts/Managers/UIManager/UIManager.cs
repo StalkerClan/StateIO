@@ -26,10 +26,10 @@ public class UIManager : Singleton<UIManager>
 
     public UICanvas OpenUI(GlobalVariables.UIType type)
     {
-        //if (LastActiveCanvas != null)
-        //{
-        //    LastActiveCanvas.OnClose();
-        //}
+        if (LastActiveCanvas != null)
+        {
+            LastActiveCanvas.OnClose();
+        }
 
         UICanvas desiredCanvas = null;
 

@@ -7,8 +7,16 @@ public class MainMenu : BaseGameState
 
     public override void EnterState(GameManager gameManager)
     {
-        UIManager.Instance.CloseUI(GlobalVariables.UIType.Blocker);
-        UIManager.Instance.CloseUI(GlobalVariables.UIType.Gameplay);
+        if (UIManager.Instance.LastActiveCanvas != null)
+        {
+            if (UIManager.Instance.LastActiveCanvas.Type == GlobalVariables.UIType.Gameplay)
+            {
+                LevelManager.Instance.LevelGenerator.SetBuildingToDefault();
+                ObjectPooler.Instance.DeSpawnAllFighters();
+                LevelManager.Instance.LevelGenerator.EnableLevel();
+            }
+        }    
+        
         (UIManager.Instance.OpenUI(GlobalVariables.UIType.MainMenu) as UIMainMenu).OpenPanel(); 
     }
 

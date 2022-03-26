@@ -19,7 +19,7 @@ public class EngageState : EnemyBaseState
                     if (nearbyBuilding.OwnerType.Equals(GlobalVariables.Owner.Neutral) ||
                         nearbyBuilding.OwnerType.Equals(GlobalVariables.Owner.Player))
                     {
-                        building.FighterMarching(nearbyBuilding.BuildingID, nearbyBuilding.transform.position);
+                        building.FighterMarching(nearbyBuilding, nearbyBuilding.transform.position);
                     }
                 }
             }

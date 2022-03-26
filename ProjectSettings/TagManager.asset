@@ -51,3 +51,6 @@ TagManager:
   - name: Fighter
     uniqueID: 2372876957
     locked: 0
+  - name: Arrow
+    uniqueID: 336285393
+    locked: 0

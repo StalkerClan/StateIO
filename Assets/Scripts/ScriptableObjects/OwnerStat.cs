@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Building", menuName = "Scriptable Objects/Building")]
+[CreateAssetMenu(fileName = "New Owner Stat", menuName = "Scriptable Objects/Owner Stat")]
 public class OwnerStat : ScriptableObject
 {
     [Header("Name")]

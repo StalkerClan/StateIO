@@ -5,16 +5,6 @@ public class UIMainMenu : UICanvas
     public GameObject PColorSwitcher;
     public GameObject PUpgrades;
 
-    private void Start()
-    {
-       
-    }
-
-    public override void OnInit()
-    {
-        base.OnInit();    
-    }
-
     public void OpenPanel()
     {
         if (JSONSaving.Instance.UserData.Level > 1)
@@ -36,13 +26,18 @@ public class UIMainMenu : UICanvas
 
     public void ChangePlayerColorToBlue()
     {
-        LevelManager.Instance.LevelGenerator.PlayerData.ChangeColor(UltilitiesManager.Instance.ColorSets[1]);
-        LevelManager.Instance.LevelGenerator.EnemiesInfo[0].ChangeColor(UltilitiesManager.Instance.ColorSets[2]);
+        LevelManager.Instance.LevelGenerator.PlayerData.ChangeColor(CosmeticManager.Instance.ColorSets[1]);
+        LevelManager.Instance.LevelGenerator.EnemiesInfo[0].ChangeColor(CosmeticManager.Instance.ColorSets[2]);
     }
 
     public void ChangePlayerColorToRed()
     {
-        LevelManager.Instance.LevelGenerator.PlayerData.ChangeColor(UltilitiesManager.Instance.ColorSets[2]);
-        LevelManager.Instance.LevelGenerator.EnemiesInfo[0].ChangeColor(UltilitiesManager.Instance.ColorSets[1]);
+        LevelManager.Instance.LevelGenerator.PlayerData.ChangeColor(CosmeticManager.Instance.ColorSets[2]);
+        LevelManager.Instance.LevelGenerator.EnemiesInfo[0].ChangeColor(CosmeticManager.Instance.ColorSets[1]);
+    }
+
+    public void GoToStore()
+    {
+        UIManager.Instance.OpenUI(GlobalVariables.UIType.Store);
     }
 }

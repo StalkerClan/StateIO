@@ -54,13 +54,13 @@ public class LevelGenerator : MonoBehaviour
         {
             GameObject newEnemy = Instantiate(enemyPrefab);
             Owner enemyInfo = newEnemy.GetComponent<Owner>();         
-            for (int j = 1; j < UltilitiesManager.Instance.ColorSets.Count; j++)
+            for (int j = 1; j < CosmeticManager.Instance.ColorSets.Count; j++)
             {
-                if (!UltilitiesManager.Instance.ColorSets[j].PlayerUsed)
+                if (!CosmeticManager.Instance.ColorSets[j].PlayerUsed)
                 {
-                    if (!UltilitiesManager.Instance.ColorSets[j].EnemyUsed)
+                    if (!CosmeticManager.Instance.ColorSets[j].EnemyUsed)
                     {
-                        enemyInfo.ColorSet = UltilitiesManager.Instance.ColorSets[j];
+                        enemyInfo.ColorSet = CosmeticManager.Instance.ColorSets[j];
                         enemyInfo.ColorSet.EnemyUsed = true;
                         break;
                     }
@@ -225,6 +225,34 @@ public class LevelGenerator : MonoBehaviour
                     break;
                 default:
                     break;
+            }
+        }
+    }
+
+    public void DisableLevel()
+    {
+        foreach (Level level in listLevel)
+        {
+            if (level.LevelStatus.CurrentStatus != LevelStatus.Status.IsPlaying)
+            {
+                foreach (Building building in level.PlayableBuildings)
+                {
+                    building.DisableBuilding();
+                }
+            }
+        }
+    }
+
+    public void EnableLevel()
+    {
+        foreach (Level level in listLevel)
+        {
+            if (level.LevelStatus.CurrentStatus != LevelStatus.Status.IsPlaying)
+            {
+                foreach (Building building in level.PlayableBuildings)
+                {
+                    building.EnableBuilding();
+                }
             }
         }
     }

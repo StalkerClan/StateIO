@@ -14,7 +14,6 @@ public class BackToMainMenu : MonoBehaviour, IPointerClickHandler
         else
         {
             GameManager.Instance.SwitchState(GameState.MainMenu);
-            LevelManager.Instance.LevelGenerator.SetBuildingToDefault();
         }     
     }
 }

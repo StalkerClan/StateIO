@@ -29,6 +29,7 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
     {
         UnsubcribeEvent();
     }
+
     public void SubcribeEvent()
     {
         levelGenerator.OnEnemiesOutOfBuildings += LevelCompleted;

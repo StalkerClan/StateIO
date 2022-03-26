@@ -17,7 +17,6 @@ public static class GlobalVariables
         Settings,
         Store, 
         Gameplay,
-        Blocker,
         GameOverScreen, 
         Button,
     }

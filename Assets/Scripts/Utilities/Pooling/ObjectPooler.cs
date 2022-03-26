@@ -11,7 +11,6 @@ public class ObjectPooler : Singleton<ObjectPooler>
     [System.Serializable]
     public class ObjectToPool
     {
-        public GameObject objectHolder;
         public string name;
         public GameObject prefab;
         public int capacity;
@@ -27,13 +26,10 @@ public class ObjectPooler : Singleton<ObjectPooler>
         pooler = new Dictionary<string, Queue<GameObject>>();
         foreach (ObjectToPool pool in pools)
         {
-            pool.objectHolder = new GameObject();
-            pool.objectHolder.name = pool.name;
-            pool.objectHolder.transform.parent = this.transform;
             Queue<GameObject> objectPool = new Queue<GameObject>();
             for (int i = 0; i < pool.capacity; i++)
             {
-                GameObject gameObject = Instantiate(pool.prefab, pool.objectHolder.transform);
+                GameObject gameObject = Instantiate(pool.prefab, transform);
                 gameObject.SetActive(false);
                 objectPool.Enqueue(gameObject);
             }

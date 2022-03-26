@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiver
 {
+
+    public event Action<Owner> OnChangingOnwer = delegate { };
+    public event Action<float> OnChangingNumberOfFighters = delegate { };
+    public event Action<float> OnEnableBuilding = delegate { };
+    public event Action OnDisableBuilding = delegate { };
+
     public class VectorSet
     {
         public List<Vector3> startPositions;
@@ -17,26 +23,21 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         }
     }
 
-    public event Action<Owner> OnChangingOnwer = delegate { };
-    public event Action<float> OnChangingNumberOfFighters = delegate { };
-
     [SerializeField] private GameObject fighterPrefab;
-
+    [SerializeField] private CollideDetector collideDetector;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private CircleCollider2D circleCollider;
     [SerializeField] private Owner defaultOwner;
     [SerializeField] private Owner buildingOwner;
-
-    [SerializeField] private SpriteRenderer spriteRenderer;
 
     [SerializeField] private Color buildingColor;
 
     [SerializeField] private GlobalVariables.Owner ownerType;
     [SerializeField] private GlobalVariables.Owner defaultOwnerType;
 
-    private Dictionary<string, VectorSet> directionDictionary;
+    private Dictionary<Building, VectorSet> directionDictionary;
 
     [SerializeField] private List<Building> nearbyBuildings;
-
-    [SerializeField] private string buildingID;
 
     [SerializeField] private float produceSpeed;
     [SerializeField] private float fighterPerTick;
@@ -58,6 +59,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     [SerializeField] private bool isMarching;
     [SerializeField] private bool active;
 
+    public CollideDetector CollideDetector { get => collideDetector; set => collideDetector = value; }
     public Owner BuildingOwner { get => buildingOwner; set => buildingOwner = value; }
     public Owner DefaultOwner { get => defaultOwner; set => defaultOwner = value; }
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; set => spriteRenderer = value; }
@@ -65,7 +67,6 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     public GlobalVariables.Owner OwnerType { get => ownerType; set => ownerType = value; }
     public GlobalVariables.Owner DefaultOwnerType { get => defaultOwnerType; set => defaultOwnerType = value; }
     public List<Building> NearbyBuildings { get => nearbyBuildings; set => nearbyBuildings = value; }
-    public string BuildingID { get => buildingID; set => buildingID = value; }
     public float ProduceSpeed { get => produceSpeed; set => produceSpeed = value; }
     public float FighterPerTick { get => fighterPerTick; set => fighterPerTick = value; }
     public int StartFighter { get => startFighter; set => startFighter = value; }
@@ -121,6 +122,8 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         OnChangingNumberOfFighters?.Invoke(owner.ownerStat.StartFighter);
         OnChangingOnwer?.Invoke(owner);
         if (currentFighter >= startFighter) currentFighter = startFighter;
+        collideDetector.Building = this;
+        collideDetector.SpriteRenderer.color = spriteRenderer.color;
     }
 
     public void GetBuildingStats(Owner owner)
@@ -180,7 +183,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
 
     public void InitializeVariables()
     {
-        directionDictionary = new Dictionary<string, VectorSet>();
+        directionDictionary = new Dictionary<Building, VectorSet>();
         spacing = 0.12f;
         multiplier = 2f;
         degree = 100f;
@@ -267,6 +270,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
                 {
                     owned = false;
                     taken = true;
+                    PlayerInput.Instance.CheckSelectedBuilding(this);
                 }
                 this.buildingOwner.RemoveBuilding(this);
                 invader.AddBuilding(this);
@@ -281,22 +285,22 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         StartCoroutine(DelayGenerating());
     }
 
-    public void FighterMarching(string currentTargetID, Vector3 currentTargetPosition)
+    public void FighterMarching(Building targetBuilding, Vector3 currentTargetPosition)
     {
         if (isMarching) return;
         isMarching = true;
         isGenerating = false;
         Vector3 direction = (currentTargetPosition - this.transform.position).normalized;
 
-        if (directionDictionary.TryGetValue(currentTargetID, out VectorSet existedfighterDirecions))
+        if (directionDictionary.TryGetValue(targetBuilding, out VectorSet existedfighterDirecions))
         {
-            StartCoroutine(DelayMarching(currentTargetID, existedfighterDirecions));
+            StartCoroutine(DelayMarching(targetBuilding, existedfighterDirecions));
         }
         else
         {
             VectorSet vectorSet = GetVectorSet(currentTargetPosition);
-            directionDictionary.Add(currentTargetID, vectorSet);
-            StartCoroutine(DelayMarching(currentTargetID, vectorSet));
+            directionDictionary.Add(targetBuilding, vectorSet);
+            StartCoroutine(DelayMarching(targetBuilding, vectorSet));
         }
     }
 
@@ -355,7 +359,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         return new VectorSet(tempStartPositions, tempFighterDirections);
     }
 
-    public void InitializeFighter(string currentTargetID, VectorSet fighterDirections)
+    public void InitializeFighter(Building targetBuilding, VectorSet fighterDirections)
     {
         lineCapacity = currentFighter > 5 ? lineCapacity = 5 : lineCapacity = (int) currentFighter;
 
@@ -363,7 +367,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         {
             for (int i = 0; i < lineCapacity; i++)
             {
-                GetFighterFromPool(i, currentTargetID, fighterDirections);       
+                GetFighterFromPool(i, targetBuilding, fighterDirections);       
             }
             OnChangingNumberOfFighters?.Invoke(currentFighter - lineCapacity);
         }
@@ -371,7 +375,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         {
             for (int i = 0; i < lineCapacity; i++)
             {
-                GetFighterFromPool(i, currentTargetID, fighterDirections);
+                GetFighterFromPool(i, targetBuilding, fighterDirections);
             }
             OnChangingNumberOfFighters?.Invoke(currentFighter - lineCapacity);
             isMarching = false;
@@ -379,7 +383,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         }
     }
 
-    public void GetFighterFromPool(int index, string targetID, VectorSet fighterDirections)
+    public void GetFighterFromPool(int index, Building targetBuilding, VectorSet fighterDirections)
     {
         GameObject newFighter = ObjectPooler.Instance.GetObject(fighterPrefab);
         Fighter fighterStat = newFighter.GetComponent<Fighter>();
@@ -387,18 +391,18 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         fighterStat.SpriteRenderer.color = buildingColor;
         fighterStat.Owner = buildingOwner;
         fighterStat.MoveDirection = fighterDirections.fighterDirections[index];
-        fighterStat.TargetID = targetID;
+        fighterStat.TargetBuilding = targetBuilding;
         fighterStat.MoveSpeed = fighterStat.DefaultMoveSpeed;
     }
 
-    IEnumerator DelayMarching(string currentTargetID, VectorSet fighterDirections)
+    IEnumerator DelayMarching(Building targetBuilding, VectorSet fighterDirections)
     {
         WaitForSeconds delayMarchcing = Utilities.GetWaitForSeconds(initializingDelay);
         while(isMarching)
         {
-            InitializeFighter(currentTargetID, fighterDirections);
+            InitializeFighter(targetBuilding, fighterDirections);
             yield return delayMarchcing;     
-        }       
+        }   
     }
 
     IEnumerator DelayGenerating()
@@ -410,5 +414,23 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         {
             isGenerating = true;
         }
+    }
+
+    public void DisableBuilding()
+    {
+        Color tempColor = spriteRenderer.color;
+        tempColor.a = 0.2f;
+        spriteRenderer.color = tempColor;
+        circleCollider.enabled = false;
+        OnDisableBuilding?.Invoke();
+    }
+
+    public void EnableBuilding()
+    {
+        Color tempColor = spriteRenderer.color;
+        tempColor.a = 1f;
+        spriteRenderer.color = tempColor; 
+        circleCollider.enabled = true;
+        OnEnableBuilding?.Invoke(currentFighter);
     }
 }

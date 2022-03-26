@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UltilitiesManager : Singleton<UltilitiesManager>
+public class CosmeticManager : Singleton<CosmeticManager>
 {
     public List<ColorSet> ColorSets = new List<ColorSet>();
 
     private void Awake()
     {
-        ColorSet[] colorSetList = Resources.LoadAll<ColorSet>("ColorSets/");
+        ColorSet[] colorSetList = Resources.LoadAll<ColorSet>("Cosmetics/ColorSet/");
         ColorSets = colorSetList.ToList();
         foreach (ColorSet colorSet in ColorSets)
         {

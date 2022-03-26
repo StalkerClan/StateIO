@@ -20,13 +20,7 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
     {
         InitializeVariables();
         SetOwner(stateOwner);
-        SetStateAndBuildingName();
         SubcribeEvent();
-    }
-
-    private void Update()
-    {
-        ChangeColorOverTime();
     }
 
     private void OnDisable()
@@ -36,12 +30,18 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
     public void SubcribeEvent()
     {      
         building.OnChangingOnwer += SetOwner;
+        building.OnEnableBuilding += EnableState;
+        building.OnDisableBuilding += DisableState;
+        building.OnChangingNumberOfFighters += ChangeColorOverTime;
     }
 
     public void UnsubcribeEvent()
     {
-        building.OnChangingOnwer -= SetOwner; 
+        building.OnChangingOnwer -= SetOwner;
+        building.OnEnableBuilding -= EnableState;
+        building.OnDisableBuilding -= DisableState;
         stateOwner.OnChangingColorSet -= ChangeStateColor;
+        building.OnChangingNumberOfFighters -= ChangeColorOverTime;
     }
 
     public void InitializeVariables()
@@ -49,15 +49,20 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
         stateOwner = building.BuildingOwner;
     }
 
-    private void SetStateAndBuildingName()
+    public void DisableState()
     {
-        stateName = spriteRenderer.sprite.name;
-        stateName = stateName.Remove(0, 3);
-        stateName = char.ToUpper(stateName[0]) + stateName.Substring(1);
-        this.gameObject.name = stateName + "State";
-        building.gameObject.name = building.BuildingID = stateName + "Building";
+        Color tempColor = spriteRenderer.color;
+        tempColor.a = 0.2f;
+        spriteRenderer.color = tempColor;
+    } 
+    
+    public void EnableState(float value)
+    {
+        Color tempColor = spriteRenderer.color;
+        tempColor.a = 1f;
+        spriteRenderer.color = tempColor;
     }
-
+    
     public void SetOwner(Owner owner)
     {
         if (stateOwner != null)
@@ -84,8 +89,8 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
         spriteRenderer.color = currentColor;
     }
 
-    public void ChangeColorOverTime()
-    {              
+    public void ChangeColorOverTime(float fighter)
+    {
         currentFighter = building.CurrentFighter;
         buildingMaxCapacity = building.MaxCapacity;
         float percent = currentFighter / buildingMaxCapacity;
