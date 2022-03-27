@@ -22,6 +22,13 @@ public class Utilities
         return hex;
     }
 
+    public static void ChangeColorAlpha(Color color1, Color color2)
+    {
+        Color tempColor = color1;
+        tempColor.a = 0;
+        color2 = tempColor;
+    }
+
     public static Color HexToColor(string hex)
     {
         hex = hex.Replace("0x", ""); //in case the string is formatted 0xFFFFFF

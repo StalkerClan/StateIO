@@ -58,6 +58,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     [SerializeField] private bool taken;
     [SerializeField] private bool isMarching;
     [SerializeField] private bool active;
+    [SerializeField] private bool paused;
 
     public CollideDetector CollideDetector { get => collideDetector; set => collideDetector = value; }
     public Owner BuildingOwner { get => buildingOwner; set => buildingOwner = value; }
@@ -82,6 +83,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     {
         SetOwner(defaultOwner, defaultOwner.OwnerType);
         SubcribeEvent();
+        paused = false;
     }
 
     private void OnDisable()
@@ -90,7 +92,8 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     }
 
     private void Update()
-    {        
+    {
+        if (paused) return;
         GenerateFighter();
     }
 
@@ -123,7 +126,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         OnChangingOnwer?.Invoke(owner);
         if (currentFighter >= startFighter) currentFighter = startFighter;
         collideDetector.Building = this;
-        collideDetector.SpriteRenderer.color = spriteRenderer.color;
+        Utilities.ChangeColorAlpha(spriteRenderer.color, collideDetector.SpriteRenderer.color);
     }
 
     public void GetBuildingStats(Owner owner)

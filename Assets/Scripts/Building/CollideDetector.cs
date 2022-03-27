@@ -6,27 +6,23 @@ public class CollideDetector : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Building building;
 
-    private Color hideRange;
-    private Color showRange;
-
     public Building Building { get => building; set => building = value; }
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; set => spriteRenderer = value; }
 
     private void Start()
     {
-        hideRange = showRange = spriteRenderer.color;
-        hideRange.a = 0f;
-        showRange.a = 0.2f;
-        HideSelectedRange();
+        HideSelectedRange(spriteRenderer.color);
     }
 
-    public void HideSelectedRange()
+    public void HideSelectedRange(Color tempColor)
     {
-        spriteRenderer.color = hideRange;
+        tempColor.a = 0f;
+        spriteRenderer.color = tempColor;
     }
 
-    public void ShowSelectedRange()
+    public void ShowSelectedRange(Color tempColor)
     {
-        spriteRenderer.color = showRange;
+        tempColor.a = 0.2f;
+        spriteRenderer.color = tempColor;
     }
 }

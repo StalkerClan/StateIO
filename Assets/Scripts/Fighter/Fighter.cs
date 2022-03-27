@@ -61,7 +61,6 @@ public class Fighter : MonoBehaviour, IInitializeVariables
             {
                 Vector3 direction = (collision.transform.position - this.transform.position).normalized;
                 moveDirection = direction;
-                moveSpeed *= 2f;
             }
         }
 
