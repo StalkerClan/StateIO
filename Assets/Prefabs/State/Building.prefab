@@ -8,7 +8,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 225415610914532392}
+  - component: {fileID: 6076904339950420371}
   - component: {fileID: 2292078404571137961}
   - component: {fileID: 2292078404571137966}
   - component: {fileID: 2292078404571137967}
@@ -21,8 +21,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &225415610914532392
-RectTransform:
+--- !u!4 &6076904339950420371
+Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -38,11 +38,6 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.71, y: 0.71}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &2292078404571137961
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -158,14 +153,15 @@ MonoBehaviour:
   initializingDelay: 0
   generatingDelay: 0
   multiplier: 0
+  currentFighter: 0
   startFighter: 0
   maxCapacity: 0
-  currentFighter: 0
   isGenerating: 0
   owned: 0
   taken: 0
   isMarching: 0
   active: 0
+  paused: 0
 --- !u!222 &2150401482070454357
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -179,7 +175,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 225415610914532392}
+    m_TransformParent: {fileID: 6076904339950420371}
     m_Modifications:
     - target: {fileID: 1106651848918144034, guid: d17b1a4e06c7f8c42b2712456897d65b, type: 3}
       propertyPath: m_RootOrder
@@ -249,7 +245,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 225415610914532392}
+    m_TransformParent: {fileID: 6076904339950420371}
     m_Modifications:
     - target: {fileID: 210185401289494257, guid: befc25d43040f8f41ad470c2105036bb, type: 3}
       propertyPath: m_RootOrder
@@ -300,6 +296,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6071397057288831435, guid: befc25d43040f8f41ad470c2105036bb, type: 3}
+      propertyPath: col
+      value: 
+      objectReference: {fileID: 9022521580355488568}
+    - target: {fileID: 6071397057288831435, guid: befc25d43040f8f41ad470c2105036bb, type: 3}
       propertyPath: building
       value: 
       objectReference: {fileID: 2292078404571137964}
@@ -314,12 +314,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 210185401289494257, guid: befc25d43040f8f41ad470c2105036bb, type: 3}
   m_PrefabInstance: {fileID: 5370904354763763713}
   m_PrefabAsset: {fileID: 0}
+--- !u!58 &9022521580355488568 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4016971857032411961, guid: befc25d43040f8f41ad470c2105036bb, type: 3}
+  m_PrefabInstance: {fileID: 5370904354763763713}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8698357965861710272
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 225415610914532392}
+    m_TransformParent: {fileID: 6076904339950420371}
     m_Modifications:
     - target: {fileID: 659971607256981661, guid: 325ac87568649be4fb51f898ae8c0631, type: 3}
       propertyPath: m_Layer

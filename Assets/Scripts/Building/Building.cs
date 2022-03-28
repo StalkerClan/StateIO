@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiver
 {
@@ -22,6 +23,8 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
             fighterDirections = newFighterDirections;
         }
     }
+
+    private Vector3 startPosition;
 
     [SerializeField] private GameObject fighterPrefab;
     [SerializeField] private CollideDetector collideDetector;
@@ -44,13 +47,15 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     [SerializeField] private float initializingDelay;
     [SerializeField] private float generatingDelay;
     [SerializeField] private float multiplier;
+    private float shakeAmount = 0.1f;
     private float degree;
     private float timeSinceGenerated;
     private float spacing;
-   
+
+    [SerializeField] private float currentFighter;
     [SerializeField] private int startFighter;
     [SerializeField] private int maxCapacity;
-    [SerializeField] private float currentFighter;
+
     protected int lineCapacity;
 
     [SerializeField] private bool isGenerating;
@@ -84,6 +89,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         SetOwner(defaultOwner, defaultOwner.OwnerType);
         SubcribeEvent();
         paused = false;
+        startPosition = this.transform.position;
     }
 
     private void OnDisable()
@@ -262,6 +268,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         }
         else
         {
+            ShakeBuilding();
             if (currentFighter <= 0)
             {
                 if (invader.OwnerType.Equals(GlobalVariables.Owner.Player))
@@ -419,6 +426,11 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         }
     }
 
+    public void ShakeBuilding()
+    {
+        transform.position = startPosition + (Vector3) Random.insideUnitCircle * shakeAmount;
+    }   
+    
     public void DisableBuilding()
     {
         Color tempColor = spriteRenderer.color;

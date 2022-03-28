@@ -1543,6 +1543,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 284787736}
     m_Modifications:
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.41
+      objectReference: {fileID: 0}
     - target: {fileID: 8019386915530472725, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
       propertyPath: m_Name
       value: us_califonia
@@ -1651,6 +1659,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 238061806}
     m_Modifications:
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.49
+      objectReference: {fileID: 0}
     - target: {fileID: 8019386915530472725, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
       propertyPath: m_Name
       value: us_oklahoma
@@ -1789,6 +1801,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   selectedBuildings: []
+  radius: 0
 --- !u!4 &465365121
 Transform:
   m_ObjectHideFlags: 0
@@ -2220,6 +2233,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2083324377}
     m_Modifications:
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.06
+      objectReference: {fileID: 0}
     - target: {fileID: 8019386915530472725, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
       propertyPath: m_Name
       value: us_florida
@@ -2856,6 +2877,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 238061806}
     m_Modifications:
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.28
+      objectReference: {fileID: 0}
     - target: {fileID: 8019386915530472725, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
       propertyPath: m_Name
       value: us_texas
@@ -3098,6 +3127,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 284787736}
     m_Modifications:
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.71
+      objectReference: {fileID: 0}
     - target: {fileID: 4980229960027782439, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -3841,6 +3878,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2064934980}
     m_Modifications:
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.47
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.04
+      objectReference: {fileID: 0}
     - target: {fileID: 8019386915530472725, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
       propertyPath: m_Name
       value: us_louisiana
@@ -4034,6 +4079,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 284787736}
     m_Modifications:
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652633991166340236, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.34
+      objectReference: {fileID: 0}
     - target: {fileID: 8019386915530472725, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
       propertyPath: m_Name
       value: us_nevada
@@ -4150,6 +4203,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: befe4da69d067d04487f8b009963c14b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1520922280 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6076904339950420371, guid: f1cc6191badb8734396267e9a6c383f2, type: 3}
+  m_PrefabInstance: {fileID: 8143187672249813195}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1535817420 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8019386915848481459, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
@@ -6180,7 +6238,7 @@ Transform:
   m_LocalPosition: {x: 8.52, y: 8.16, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 8143187672249813198}
+  - {fileID: 1520922280}
   m_Father: {fileID: 2083324377}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6359,10 +6417,5 @@ MonoBehaviour:
 --- !u!212 &8143187672249813197 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 2292078404571137961, guid: f1cc6191badb8734396267e9a6c383f2, type: 3}
-  m_PrefabInstance: {fileID: 8143187672249813195}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &8143187672249813198 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 225415610914532392, guid: f1cc6191badb8734396267e9a6c383f2, type: 3}
   m_PrefabInstance: {fileID: 8143187672249813195}
   m_PrefabAsset: {fileID: 0}

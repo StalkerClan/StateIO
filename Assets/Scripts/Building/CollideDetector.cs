@@ -11,16 +11,16 @@ public class CollideDetector : MonoBehaviour
 
     private void Start()
     {
-        HideSelectedRange(spriteRenderer.color);
+        HideRadius(spriteRenderer.color);
     }
 
-    public void HideSelectedRange(Color tempColor)
+    public void HideRadius(Color tempColor)
     {
         tempColor.a = 0f;
         spriteRenderer.color = tempColor;
     }
 
-    public void ShowSelectedRange(Color tempColor)
+    public void ShowRadius(Color tempColor)
     {
         tempColor.a = 0.2f;
         spriteRenderer.color = tempColor;

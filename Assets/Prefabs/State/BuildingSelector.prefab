@@ -82,4 +82,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4de715f57f8e93d459d485b138dbc7f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  col: {fileID: 4016971857032411961}
   building: {fileID: 0}
+  outOfBorder: 0

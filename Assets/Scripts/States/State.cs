@@ -11,8 +11,6 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
     public Color firstColor;
     public Color secondColor;
 
-    public string stateName;
-
     public float currentFighter;
     public float buildingMaxCapacity;
     
@@ -73,6 +71,7 @@ public class State : MonoBehaviour, IInitializeVariables, ISubcriber
         stateOwner.OnChangingColorSet += ChangeStateColor;
         firstColor = Utilities.HexToColor(Utilities.ColorToHex(stateOwner.ColorSet.FirstColor));
         secondColor = Utilities.HexToColor(Utilities.ColorToHex(stateOwner.ColorSet.SecondColor));
+        currentFighter = building.CurrentFighter;
         buildingMaxCapacity = building.MaxCapacity;
         float percent = currentFighter / buildingMaxCapacity;
         currentColor = Color.Lerp(firstColor, secondColor, percent);

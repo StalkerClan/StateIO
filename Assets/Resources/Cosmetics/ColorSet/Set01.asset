@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Set01
   m_EditorClassIdentifier: 
   KeyColor: {r: 1, g: 1, b: 1, a: 0}
-  FirstColor: {r: 0.63529414, g: 0.63529414, b: 0.63529414, a: 0}
+  FirstColor: {r: 0.8679245, g: 0.8679245, b: 0.8679245, a: 0}
   SecondColor: {r: 0.63529414, g: 0.63529414, b: 0.63529414, a: 0}
-  Used: 0
+  PlayerUsed: 0
+  EnemyUsed: 0
   Locked: 1
