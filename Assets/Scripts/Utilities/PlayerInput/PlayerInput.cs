@@ -13,7 +13,7 @@ public class PlayerInput : Singleton<PlayerInput>
     [SerializeField] private LayerMask layerMask;
 
     [SerializeField] private List<Arrow> arrows = new List<Arrow>();
-    private HashSet<BuildingSelector> hashSetPerparingBuildings = new HashSet<BuildingSelector>();
+    private List<BuildingSelector> prepBuildings = new List<BuildingSelector>();
     private HashSet<Building> hashSetSelectedBuildings = new HashSet<Building>();
     private Building targetBuilding;
     private Building prepToRemoveBuilding;
@@ -33,7 +33,7 @@ public class PlayerInput : Singleton<PlayerInput>
     public Vector3 TargetPosition { get => targetPosition; set => targetPosition = value; }
     public Vector3 Direction { get => direction; set => direction = value; }
     public List<Arrow> Arrows { get => arrows; set => arrows = value; }
-    public HashSet<BuildingSelector> HashSetPerparingBuildings { get => hashSetPerparingBuildings; set => hashSetPerparingBuildings = value; }
+    public List<BuildingSelector> HashSetPerparingBuildings { get => prepBuildings; set => prepBuildings = value; }
     public HashSet<Building> HashSetSelectedBuildings { get => hashSetSelectedBuildings; set => hashSetSelectedBuildings = value; }
     public bool Marched { get => marched; set => marched = value; }
 
@@ -45,7 +45,7 @@ public class PlayerInput : Singleton<PlayerInput>
 
     private void Update()
     {
-        Debug.Log(hashSetPerparingBuildings.Count);
+        Debug.Log(prepBuildings.Count);
         SelectTarget();
     }
 
@@ -53,12 +53,13 @@ public class PlayerInput : Singleton<PlayerInput>
     {
         if (hashSetSelectedBuildings.Contains(building))
         {
-            Arrow arrowData = arrows.Find(x => x.SelectedBuilding == building);
-            if (arrowData != null)
-            {
-                arrowData.DeSpawn();
-                arrows.Remove(arrowData);
-            }
+            //Arrow arrowData = arrows.Find(x => x.SelectedBuilding == building);
+            //if (arrowData != null)
+            //{
+            //    arrowData.DeSpawn();
+            //    arrows.Remove(arrowData);
+            //}
+            prepBuildings.Find(x => x.Building == building);
             hashSetSelectedBuildings.Remove(building);
         }
     }
@@ -82,30 +83,27 @@ public class PlayerInput : Singleton<PlayerInput>
                     }
                     
                     if (buildingSelector.Building.OwnerType.Equals(GlobalVariables.Owner.Player))
-                    {
-                        if (buildingSelector.OutOfRadius)
-                        {
-                            if (!buildingSelector.HasArrow)
-                            {
-                                buildingSelector.OutOfRadius = false;
-                                GenerateSelectorArrow(buildingSelector);
-                            }
-                        }
-
+                    {                      
                         if (!buildingSelector.HasArrow)
                         {
-                            if (buildingSelector.OutOfRadius)
+                            if (!buildingSelector.OutOfRadius)
                             {
-                                prepToRemoveBuilding = buildingSelector.Building;
-                                prepToRemoveBuilding.CollideDetector.ShowRadius(selectedBuildingColor);
+                                if (!buildingSelector.Visited)
+                                {
+                                    buildingSelector.Visited = true;
+                                    GenerateSelectorArrow(buildingSelector);
+                                }
+                                else
+                                {
+                                    prepToRemoveBuilding = buildingSelector.Building;
+                                    prepToRemoveBuilding.CollideDetector.ShowRadius(selectedBuildingColor);
+                                }
                             }
                             else
                             {
                                 GenerateSelectorArrow(buildingSelector);
                             }
                         }
-
-                        
                     }
 
                     else if (!buildingSelector.Building.OwnerType.Equals(GlobalVariables.Owner.Player))
@@ -168,46 +166,48 @@ public class PlayerInput : Singleton<PlayerInput>
     private void GenerateSelectorArrow(BuildingSelector buildingSelector)
     {
         buildingSelector.HasArrow = true;
-        hashSetPerparingBuildings.Add(buildingSelector);
+        if (!prepBuildings.Contains(buildingSelector))
+        {
+            prepBuildings.Add(buildingSelector);
+        } 
         CreateArrow(buildingSelector);
         buildingSelector.Building.CollideDetector.ShowRadius(selectedBuildingColor);
     }
 
     private void CheckArrowStatus()
     {
-        if (hashSetPerparingBuildings.Count > 0)
+        if (prepBuildings.Count > 0)
         {
-            foreach (BuildingSelector selector in hashSetPerparingBuildings)
+            for (int i = 0; i < prepBuildings.Count; i++)
             {
-                float distance = Vector2.Distance(mousePosition.point, selector.transform.position);
+                float distance = Vector2.Distance(mousePosition.point, prepBuildings[i].transform.position);
                 if (distance > radius)
                 {
-                    if (!selector.OutOfRadius)
+                    if (!prepBuildings[i].OutOfRadius)
                     {
-                        selector.OutOfRadius = true;
-                        hashSetSelectedBuildings.Add(selector.Building);
-                        selector.Building.CollideDetector.HideRadius(targetBuildingColor);
+                        prepBuildings[i].OutOfRadius = true;
+                        prepBuildings[i].Building.CollideDetector.HideRadius(targetBuildingColor);
+                        hashSetSelectedBuildings.Add(prepBuildings[i].Building);
                     }
                 }
                 else
                 {
-                    if (hashSetSelectedBuildings.Count > 1)
+                    
+                    if (prepBuildings.Count > 1)
                     {
-                        if (selector.OutOfRadius)
+                        if (prepBuildings[i].OutOfRadius)
                         {
-                            if (selector.HasArrow)
+                            if (!prepBuildings[i].Visited)
                             {
-                                selector.HasArrow = false;
-                                selector.SelectorArrow.DeSpawn();
-                                if (selector.SelectorArrow == null)
-                                {
-                                    arrows.Remove(selector.SelectorArrow);
-                                }
-                            }                                            
+                                prepBuildings[i].HasArrow = false;
+                                prepBuildings[i].SelectorArrow.DeSpawn();
+                                prepBuildings[i].Visited = true;
+                            }
+                            
                         }
+                        prepBuildings[i].Building.CollideDetector.ShowRadius(selectedBuildingColor);
+                        hashSetSelectedBuildings.Remove(prepBuildings[i].Building);
                     }
-                    selector.Building.CollideDetector.ShowRadius(selectedBuildingColor);
-                    hashSetSelectedBuildings.Remove(selector.Building);
                 }
             }
         }
@@ -215,32 +215,27 @@ public class PlayerInput : Singleton<PlayerInput>
 
     public void CreateArrow(BuildingSelector buildingSelector)
     {
-        if (arrows.Count < hashSetPerparingBuildings.Count)
+        if (buildingSelector.SelectorArrow == null)
         {
             GameObject newArrow = ObjectPooler.Instance.GetObject(arrowPrefab.gameObject);
             newArrow.transform.position = buildingSelector.transform.position;
             Arrow arrowData = newArrow.GetComponent<Arrow>();
             buildingSelector.SelectorArrow = arrowData;
-            arrows.Add(arrowData);
         }
     }
 
     public void Reset()
     {
-        if (arrows != null)
+
+        foreach (BuildingSelector buildingSelector in prepBuildings)
         {
-            foreach (Arrow arrow in arrows)
-            {
-                arrow.DeSpawn();
-            }
-        }   
-        arrows.Clear();
-        foreach (BuildingSelector buildingSelector in hashSetPerparingBuildings)
-        {
+            buildingSelector.SelectorArrow.DeSpawn();
+            buildingSelector.SelectorArrow = null;
             buildingSelector.HasArrow = false;
             buildingSelector.OutOfRadius = false;
+            buildingSelector.Visited = false;
         }
-        hashSetPerparingBuildings.Clear();
+        prepBuildings.Clear();
         hashSetSelectedBuildings.Clear(); 
         startPosition = Vector3.zero;
         targetPosition = Vector3.zero;
