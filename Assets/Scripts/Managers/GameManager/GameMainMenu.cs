@@ -13,7 +13,7 @@ public class MainMenu : BaseGameState
             {
                 LevelManager.Instance.LevelGenerator.SetBuildingToDefault();
                 ObjectPooler.Instance.DeSpawnAllFighters();
-                LevelManager.Instance.LevelGenerator.EnableLevel();
+                LevelManager.Instance.LevelGenerator.EnableMap();
             }
         }    
         

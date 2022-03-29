@@ -136,6 +136,7 @@ public class LevelGenerator : MonoBehaviour
         {
             SetBuildingOwner(currentLevel.EnemyInfos[i].EnemyStartBuildings, enemiesInfo[i]);
         }
+        EnableNextLevel();
     }
    
     public void EnableGenerateFighter()
@@ -229,7 +230,7 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    public void DisableLevel()
+    public void DisableMap()
     {
         foreach (Level level in listLevel)
         {
@@ -243,11 +244,25 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    public void EnableLevel()
+    public void EnableMap()
     {
         foreach (Level level in listLevel)
         {
             if (level.LevelStatus.CurrentStatus != LevelStatus.Status.IsPlaying)
+            {
+                foreach (Building building in level.PlayableBuildings)
+                {
+                    building.EnableBuilding();
+                }
+            }
+        }
+    }
+
+    public void EnableNextLevel()
+    {
+        foreach (Level level in listLevel)
+        {
+            if (level.LevelStatus.CurrentStatus == LevelStatus.Status.IsPlaying)
             {
                 foreach (Building building in level.PlayableBuildings)
                 {

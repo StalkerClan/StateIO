@@ -4,7 +4,6 @@ public class Arrow : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Color targetBuildingColor;
-    private BuildingSelector selector;
     private Building selectedBuilding;
     private Vector3 target;
     private Vector2 difference;
@@ -15,7 +14,6 @@ public class Arrow : MonoBehaviour
 
     public SpriteRenderer SpriteRenderer { get => spriteRenderer; set => spriteRenderer = value; }
     public Color TargetBuildingColor { get => targetBuildingColor; set => targetBuildingColor = value; }
-    public BuildingSelector Selector { get => selector; set => selector = value; }
     public Building SelectedBuilding { get => selectedBuilding; set => selectedBuilding = value; }
     public float Distance { get => distance; set => distance = value; }
     public bool OutOfBorder { get => outOfBorder; set => outOfBorder = value; }
