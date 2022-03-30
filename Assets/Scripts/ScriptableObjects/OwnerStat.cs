@@ -17,6 +17,7 @@ public class OwnerStat : ScriptableObject
 
     [Header("Resources")]
     public int Currency;
+    public int goldOffineEarned;
 
     [Header("Fighter")]
     public float DefaultMoveSpeed;

@@ -11,9 +11,10 @@ public class ObjectPooler : Singleton<ObjectPooler>
     [System.Serializable]
     public class ObjectToPool
     {
-        public string name;
-        public GameObject prefab;
-        public int capacity;
+        public GameObject ObjectHolder;
+        public string Name;
+        public GameObject Prefab;
+        public int Capacity;
     }
 
     public List<ObjectToPool> pools;
@@ -26,14 +27,17 @@ public class ObjectPooler : Singleton<ObjectPooler>
         pooler = new Dictionary<string, Queue<GameObject>>();
         foreach (ObjectToPool pool in pools)
         {
+            pool.ObjectHolder = new GameObject(pool.Name);
+            pool.ObjectHolder.transform.parent = transform;
             Queue<GameObject> objectPool = new Queue<GameObject>();
-            for (int i = 0; i < pool.capacity; i++)
+            for (int i = 0; i < pool.Capacity; i++)
             {
-                GameObject gameObject = Instantiate(pool.prefab, transform);
+                GameObject gameObject = Instantiate(pool.Prefab, transform);
+                gameObject.transform.parent = pool.ObjectHolder.transform;
                 gameObject.SetActive(false);
                 objectPool.Enqueue(gameObject);
             }
-            pooler.Add(pool.name, objectPool);
+            pooler.Add(pool.Name, objectPool);
         }
     }
 

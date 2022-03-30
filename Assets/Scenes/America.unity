@@ -153,12 +153,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pools:
-  - name: Fighter
-    prefab: {fileID: 2037365604297934646, guid: e4ca2b0ee5c88f244937c23534694982, type: 3}
-    capacity: 300
-  - name: Arrow
-    prefab: {fileID: 2913263377495948952, guid: 0e5b422294487e845b964f48fe445434, type: 3}
-    capacity: 20
+  - ObjectHolder: {fileID: 0}
+    Name: Fighter
+    Prefab: {fileID: 2037365604297934646, guid: e4ca2b0ee5c88f244937c23534694982, type: 3}
+    Capacity: 200
+  - ObjectHolder: {fileID: 0}
+    Name: Arrow
+    Prefab: {fileID: 2913263377495948952, guid: 0e5b422294487e845b964f48fe445434, type: 3}
+    Capacity: 20
 --- !u!4 &1097834
 Transform:
   m_ObjectHideFlags: 0
@@ -1800,7 +1802,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
-  selectedBuildings: []
+  prepBuildings: []
   radius: 0
 --- !u!4 &465365121
 Transform:
@@ -5876,7 +5878,6 @@ MonoBehaviour:
   currentColor: {r: 0, g: 0, b: 0, a: 0}
   firstColor: {r: 0, g: 0, b: 0, a: 0}
   secondColor: {r: 0, g: 0, b: 0, a: 0}
-  stateName: 
   currentFighter: 0
   buildingMaxCapacity: 0
 --- !u!1 &4514228480898968744
@@ -5929,7 +5930,6 @@ MonoBehaviour:
   currentColor: {r: 0, g: 0, b: 0, a: 0}
   firstColor: {r: 0, g: 0, b: 0, a: 0}
   secondColor: {r: 0, g: 0, b: 0, a: 0}
-  stateName: 
   currentFighter: 0
   buildingMaxCapacity: 0
 --- !u!212 &4675847472448381715
@@ -6084,7 +6084,6 @@ MonoBehaviour:
   currentColor: {r: 0, g: 0, b: 0, a: 0}
   firstColor: {r: 0, g: 0, b: 0, a: 0}
   secondColor: {r: 0, g: 0, b: 0, a: 0}
-  stateName: 
   currentFighter: 0
   buildingMaxCapacity: 0
 --- !u!1 &4976931553908540540
@@ -6123,7 +6122,6 @@ MonoBehaviour:
   currentColor: {r: 0, g: 0, b: 0, a: 0}
   firstColor: {r: 0, g: 0, b: 0, a: 0}
   secondColor: {r: 0, g: 0, b: 0, a: 0}
-  stateName: 
   currentFighter: 0
   buildingMaxCapacity: 0
 --- !u!212 &6348424750343944485
@@ -6260,7 +6258,6 @@ MonoBehaviour:
   currentColor: {r: 0, g: 0, b: 0, a: 0}
   firstColor: {r: 0, g: 0, b: 0, a: 0}
   secondColor: {r: 0, g: 0, b: 0, a: 0}
-  stateName: 
   currentFighter: 0
   buildingMaxCapacity: 0
 --- !u!212 &7984164300791961807

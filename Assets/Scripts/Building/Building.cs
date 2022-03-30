@@ -27,9 +27,9 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     private Vector3 startPosition;
 
     [SerializeField] private GameObject fighterPrefab;
+    [SerializeField] private GameObject buildingSelector;
     [SerializeField] private CollideDetector collideDetector;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private CircleCollider2D circleCollider;
     [SerializeField] private Owner defaultOwner;
     [SerializeField] private Owner buildingOwner;
 
@@ -83,6 +83,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     public bool Taken { get => taken; set => taken = value; }
     public bool IsMarching { get => isMarching; set => isMarching = value; }
     public bool Active { get => active; set => active = value; }
+
 
     private void Start()
     {
@@ -268,7 +269,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         }
         else
         {
-            ShakeBuilding();
+            
             if (currentFighter <= 0)
             {
                 if (invader.OwnerType.Equals(GlobalVariables.Owner.Player))
@@ -290,7 +291,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
             else
             {
                 OnChangingNumberOfFighters?.Invoke(currentFighter - fighter);
-            }
+            }         
         }
         StartCoroutine(DelayGenerating());
     }
@@ -436,7 +437,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         Color tempColor = spriteRenderer.color;
         tempColor.a = 0.2f;
         spriteRenderer.color = tempColor;
-        circleCollider.enabled = false;
+        buildingSelector.SetActive(false);
         OnDisableBuilding?.Invoke();
     }
 
@@ -444,8 +445,8 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
     {
         Color tempColor = spriteRenderer.color;
         tempColor.a = 1f;
-        spriteRenderer.color = tempColor; 
-        circleCollider.enabled = true;
+        spriteRenderer.color = tempColor;
+        buildingSelector.SetActive(true);
         OnEnableBuilding?.Invoke(currentFighter);
     }
 }
