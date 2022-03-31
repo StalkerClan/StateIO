@@ -55,7 +55,7 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
 
     public void LevelCompleted()
     {
-        Player.OwnerStat.Currency = Formula.WinningGoldEarned(LevelID);
+        EconomySystem.Instance.WinningGoldEarned(LevelID);
         levelGenerator.SetPlayerOwnedBuildings();
         currentLevel.SetLevelStatus(LevelStatus.Status.Completed);
         LevelID++;
@@ -69,7 +69,7 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
 
     public void GameOver()
     {
-        Player.OwnerStat.Currency = Formula.LoseGoldEarned(LevelID);
+        EconomySystem.Instance.LoseGoldEarned(LevelID);
         OnAddingCurrency?.Invoke(Player.OwnerStat.Currency);
         GameManager.Instance.SwitchState(GameState.GameOver);
     }

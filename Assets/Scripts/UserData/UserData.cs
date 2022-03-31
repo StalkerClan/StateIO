@@ -1,21 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 [System.Serializable]
 public class UserData
 {
-    public OwnerStat UserStat;
     public int Level;
-    public float LastHourPlayed;
-    public float LastMinutePlayed;
+    public DateTime lastTimePlayed;
+    public OwnerStat UserStat;
 
-
-    public UserData(OwnerStat ownerStat, int level, float lastHourPlayed, float lastMinutePlayed)
+    public UserData(int level, OwnerStat ownerStat, DateTime time)
     {
         UserStat = ownerStat;
         Level = level;
-        LastHourPlayed = lastHourPlayed;
-        LastMinutePlayed = lastMinutePlayed;
+        lastTimePlayed = time;
     }
 }

@@ -5,10 +5,11 @@ using UnityEngine;
 
 public static class Formula 
 {
-    public static int baseGoldRequired = 50;
-    public static int additionFighter = 1; 
-    public static float baseProduceSpeed = 1f;
-    public static int goldBase = 200;
+    private static int baseGoldRequired = 50;
+    private static int additionFighter = 1;
+    private static float baseProduceSpeed = 1f;
+    private static int goldBase = 200;
+    private static int goldEarningOfflineBase = 100;
 
     public static int GoldRequired(int level)
     {
