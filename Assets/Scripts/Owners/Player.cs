@@ -31,4 +31,9 @@ public class Player : Owner
         OwnerStat.ProduceSpeed = value;
         OnUpgradeProduceSpeed?.Invoke(value);
     }
+
+    public void UpgradeOfflineEarning(int value)
+    {
+        //OwnerStat.BaseGoldOffineEarned = value;
+    }
 }

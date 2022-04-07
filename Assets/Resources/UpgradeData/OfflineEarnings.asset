@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 112e1552dd7271d4a9440175be36afad, type: 3}
-  m_Name: Level02
+  m_Script: {fileID: 11500000, guid: 78a5730139c612942b03040db11d2db2, type: 3}
+  m_Name: OfflineEarnings
   m_EditorClassIdentifier: 
-  CurrentStatus: 0
+  Level: 1
+  Cost: 50
+  Value: 100

@@ -10,6 +10,7 @@ public class GameStart : BaseGameState
         (UIManager.Instance.OpenUI(GlobalVariables.UIType.Gameplay) as UIGameplay).OnPlaying();
         LevelManager.Instance.LevelGenerator.EnableGenerateFighter();
         LevelManager.Instance.LevelGenerator.DisableMap();
+        PlayerInput.Instance.IsPlaying = true;
     }
 
     public override void UpdateState(GameManager gameManager)

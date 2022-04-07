@@ -17,8 +17,8 @@ public class ShowOnScreen : MonoBehaviour, ISubcriber
 
     }
 
-    public virtual void ShowInfo(int info)
+    public virtual void ShowInfo(string data)
     {
-        
+
     }
 }

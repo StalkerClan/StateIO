@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class JSONSaving : Singleton<JSONSaving>
 {
+    public DateTime LastTimePlayed;
+    public DateTime CurrentTimePlay;
     private OwnerStat userStat;
     private UserData userData;
 
@@ -24,7 +26,21 @@ public class JSONSaving : Singleton<JSONSaving>
 
     private void OnDestroy()
     {
+        SaveBeforeExit();
         SaveData();
+    }
+
+    public void SaveBeforeExit()
+    {
+        if (userData.Level > 1 && !userData.PassedFirstLevel)
+        {
+            userData.PassedFirstLevel = true;
+        } 
+
+        if (userData.Level > 1 && userData.StartCounting)
+        {
+            UserData.LastTimePlayedFormatted = userData.CurrentPlayTimeFormatted;
+        }
     }
 
     private void LoadUserData()
@@ -32,7 +48,7 @@ public class JSONSaving : Singleton<JSONSaving>
         userStat = Resources.Load<OwnerStat>("OwnerStat/UserStat");
         if (!userStat.Initialized)
         {
-            userData = new UserData(1, userStat, DateTime.Now);
+            userData = new UserData(1, userStat);
             userStat.Initialized = true;
             SaveData();
         }
@@ -50,11 +66,10 @@ public class JSONSaving : Singleton<JSONSaving>
 
     public void SaveData()
     {
-        userData.lastTimePlayed = DateTime.Now;
         string json = JsonUtility.ToJson(userData);
         using StreamWriter writer = new StreamWriter(persistentPath);
         writer.Write(json);
-        Debug.Log(persistentPath);
+        //Debug.Log(persistentPath);
     }
 
     public void LoadData()
@@ -62,6 +77,13 @@ public class JSONSaving : Singleton<JSONSaving>
         using StreamReader reader = new StreamReader(persistentPath);
         string json = reader.ReadToEnd();
         userData = JsonUtility.FromJson<UserData>(json);
-        Debug.Log(persistentPath);
+        if (userData.Level > 1 && userData.PassedFirstLevel)
+        {
+            LastTimePlayed = DateTime.ParseExact(userData.LastTimePlayedFormatted, 
+                "dd/MM/yyyy HH:mm:ss", 
+                System.Globalization.CultureInfo.InvariantCulture); 
+            userData.CurrentPlayTimeFormatted = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+        }
+        //Debug.Log(persistentPath);
     }
 }

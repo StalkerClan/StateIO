@@ -16,8 +16,7 @@ public class OwnerStat : ScriptableObject
     public int MaxCapacity;
 
     [Header("Resources")]
-    public int Currency;
-    public int goldOffineEarned;
+    public int Gold;
 
     [Header("Fighter")]
     public float DefaultMoveSpeed;

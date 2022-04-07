@@ -20,10 +20,4 @@ public static class GlobalVariables
         GameOverScreen, 
         Button,
     }
-
-    public enum UpgradeType
-    {
-        StartUnits,
-        ProduceSpeed,
-    }
 }

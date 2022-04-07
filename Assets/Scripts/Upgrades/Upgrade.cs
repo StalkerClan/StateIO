@@ -6,7 +6,14 @@ using UnityEngine.UI;
 
 public class Upgrade : MonoBehaviour
 {
-    public GlobalVariables.UpgradeType Type;
+    public enum UpgradeType
+    {
+        StartUnits,
+        ProduceSpeed,
+        OfflineEarnings,
+    }
+
+    public UpgradeType Type;
     public UpgradeData UpgradeData;
     public TextMeshProUGUI UpgradeNumber;
     public TextMeshProUGUI CurrentLevel;

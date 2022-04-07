@@ -9,7 +9,7 @@ public class ShowLevel : ShowOnScreen
 
     private void Start()
     {
-        ShowInfo(LevelManager.Instance.LevelID);
+        ShowInfo(LevelManager.Instance.UserData.Level.ToString());
         SubcribeEvent();
     }
 
@@ -27,8 +27,8 @@ public class ShowLevel : ShowOnScreen
         LevelManager.Instance.OnShowingLevelID -= ShowInfo;
     }
 
-    public override void ShowInfo(int info)
+    public override void ShowInfo(string data)
     {
-        TextInfo.text = strLevel + info.ToString();
+        TextInfo.text = strLevel + data;
     }
 }

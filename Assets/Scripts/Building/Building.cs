@@ -131,7 +131,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         InitializeVariables();
         OnChangingNumberOfFighters?.Invoke(owner.ownerStat.StartFighter);
         OnChangingOnwer?.Invoke(owner);
-        if (currentFighter >= startFighter) currentFighter = startFighter;
+        if (currentFighter > startFighter) currentFighter = startFighter;
         collideDetector.Building = this;
         Utilities.ChangeColorAlpha(spriteRenderer.color, collideDetector.SpriteRenderer.color);
     }
@@ -269,7 +269,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         }
         else
         {
-            
+            Shaking();
             if (currentFighter <= 0)
             {
                 if (invader.OwnerType.Equals(GlobalVariables.Owner.Player))
@@ -293,6 +293,7 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
                 OnChangingNumberOfFighters?.Invoke(currentFighter - fighter);
             }         
         }
+        StartCoroutine(BackToStartPosition());
         StartCoroutine(DelayGenerating());
     }
 
@@ -427,10 +428,18 @@ public class Building : MonoBehaviour, IInitializeVariables, ISubcriber, IReceiv
         }
     }
 
-    public void ShakeBuilding()
+    public void Shaking()
     {
         transform.position = startPosition + (Vector3) Random.insideUnitCircle * shakeAmount;
     }   
+
+    IEnumerator BackToStartPosition()
+    {
+        WaitForSeconds backToStartPos = Utilities.GetWaitForSeconds(0.2f);
+        yield return backToStartPos;
+
+        transform.position = startPosition;
+    }
     
     public void DisableBuilding()
     {

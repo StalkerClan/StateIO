@@ -25,6 +25,7 @@ public class PlayerInput : Singleton<PlayerInput>
     private RaycastHit2D mousePosition;
 
     [SerializeField] private float radius;
+    [SerializeField] private bool isPlaying;
     private bool marched;
     private bool setted;
 
@@ -32,8 +33,9 @@ public class PlayerInput : Singleton<PlayerInput>
     public Vector3 TargetPosition { get => targetPosition; set => targetPosition = value; }
     public Vector3 Direction { get => direction; set => direction = value; }
     public List<BuildingSelector> HashSetPerparingBuildings { get => prepBuildings; set => prepBuildings = value; }
-    public HashSet<Building> HashSetSelectedBuildings { get => hashSetSelectedBuildings; set => hashSetSelectedBuildings = value; }
+    public bool IsPlaying { get => isPlaying; set => isPlaying = value; }
     public bool Marched { get => marched; set => marched = value; }
+
 
     private void Awake()
     {
@@ -43,6 +45,7 @@ public class PlayerInput : Singleton<PlayerInput>
 
     private void Update()
     {
+        if (!isPlaying) return;
         SelectTarget();
     }
 
@@ -54,12 +57,12 @@ public class PlayerInput : Singleton<PlayerInput>
             selector.ArrowInstance.DeSpawn();
             selector.ArrowInstance = null;
             prepBuildings.Remove(selector);
-            hashSetSelectedBuildings.Remove(building);
         }
     }
 
     public void SelectTarget()
     {
+        Debug.Log("haha");
         #region MouseInput
         #region MouseDown
         if (Input.GetMouseButton(0))
@@ -98,12 +101,15 @@ public class PlayerInput : Singleton<PlayerInput>
                         }
                     }
                     else
-                    {
-                        if (tempBuilding == null)
+                    {    
+                        if (prepBuildings.Count > 0)
                         {
-                            tempBuilding = buildingSelector.Building;
-                            tempBuilding.CollideDetector.ShowRadius(targetBuildingColor);
-                        }                   
+                            if (tempBuilding == null)
+                            {
+                                tempBuilding = buildingSelector.Building;
+                                tempBuilding.CollideDetector.ShowRadius(targetBuildingColor);
+                            }
+                        }
                     }
                 }
                 else RemoveTempBuilding();    
@@ -121,17 +127,14 @@ public class PlayerInput : Singleton<PlayerInput>
             {
                 if (mousePosition.transform.gameObject.TryGetComponent(out BuildingSelector buildingSelector))
                 {
-                    if (prepBuildings.Count > 0)
+                    if (hashSetSelectedBuildings.Count > 0)
                     {
                         targetBuilding = buildingSelector.Building;
                         targetBuilding.CollideDetector.HideRadius(targetBuildingColor);
                         targetPosition = targetBuilding.transform.position;
-                        foreach (BuildingSelector selector in prepBuildings)
+                        foreach (Building building in hashSetSelectedBuildings)
                         {
-                            if (selector.HasArrow)
-                            {
-                                selector.Building.FighterMarching(targetBuilding, targetPosition);
-                            }
+                            building.FighterMarching(targetBuilding, targetPosition);
                         }
                         marched = true;
                     }
@@ -184,7 +187,8 @@ public class PlayerInput : Singleton<PlayerInput>
                         }
                         else
                         {
-                            prepBuildings[i].OutOfRadius = true;
+                            prepBuildings[i].OutOfRadius = true; 
+                            hashSetSelectedBuildings.Add(prepBuildings[i].Building);
                         }
                     }
                     else
@@ -204,8 +208,10 @@ public class PlayerInput : Singleton<PlayerInput>
                             prepBuildings[i].OutOfRadius = false;
                             prepBuildings[i].ArrowInstance.DeSpawn();
                             prepBuildings[i].ArrowInstance = null;
+                            
                         } 
                     }
+                    hashSetSelectedBuildings.Remove(prepBuildings[i].Building);
                     prepBuildings[i].Building.CollideDetector.ShowRadius(selectedBuildingColor);
                 }
             }
@@ -225,7 +231,6 @@ public class PlayerInput : Singleton<PlayerInput>
 
     public void Reset()
     {
-
         foreach (BuildingSelector buildingSelector in prepBuildings)
         {
             if (buildingSelector.ArrowInstance != null)
@@ -237,7 +242,6 @@ public class PlayerInput : Singleton<PlayerInput>
             buildingSelector.Building.CollideDetector.HideRadius(selectedBuildingColor);
         }
         prepBuildings.Clear();
-        hashSetSelectedBuildings.Clear(); 
         startPosition = Vector3.zero;
         targetPosition = Vector3.zero;
     }

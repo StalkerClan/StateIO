@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class MainMenu : BaseGameState
 {
-    public event Action<BaseGameState> OnFinishedLevel = delegate { };
 
     public override void EnterState(GameManager gameManager)
     {
@@ -14,6 +13,7 @@ public class MainMenu : BaseGameState
                 LevelManager.Instance.LevelGenerator.SetBuildingToDefault();
                 ObjectPooler.Instance.DeSpawnAllFighters();
                 LevelManager.Instance.LevelGenerator.EnableMap();
+                PlayerInput.Instance.IsPlaying = false;
             }
         }    
         

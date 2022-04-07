@@ -970,6 +970,10 @@ MonoBehaviour:
   Type: 5
   PExit: {fileID: 6539771166093826272}
   PConfirm: {fileID: 708852812117168299}
+  PWon: {fileID: 0}
+  PLose: {fileID: 0}
+  TxtGoldWinning: {fileID: 0}
+  TxtGoldLosing: {fileID: 0}
 --- !u!1 &8546078443113712370
 GameObject:
   m_ObjectHideFlags: 0
@@ -1283,11 +1287,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4900747244851071683, guid: 9132eb6070c92a5488495b6b44c997da, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.000013947
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4900747244851071683, guid: 9132eb6070c92a5488495b6b44c997da, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -133.1354
+      value: -133.13538
       objectReference: {fileID: 0}
     - target: {fileID: 4900747244851071683, guid: 9132eb6070c92a5488495b6b44c997da, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

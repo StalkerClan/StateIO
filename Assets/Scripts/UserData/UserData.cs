@@ -4,13 +4,15 @@ using System;
 public class UserData
 {
     public int Level;
-    public DateTime lastTimePlayed;
     public OwnerStat UserStat;
+    public string LastTimePlayedFormatted;
+    public string CurrentPlayTimeFormatted;
+    public bool PassedFirstLevel;
+    public bool StartCounting;
 
-    public UserData(int level, OwnerStat ownerStat, DateTime time)
+    public UserData(int level, OwnerStat ownerStat)
     {
         UserStat = ownerStat;
         Level = level;
-        lastTimePlayed = time;
     }
 }
