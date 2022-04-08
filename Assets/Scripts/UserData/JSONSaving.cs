@@ -8,8 +8,8 @@ public class JSONSaving : Singleton<JSONSaving>
 {
     public DateTime LastTimePlayed;
     public DateTime CurrentTimePlay;
-    private OwnerStat userStat;
-    private UserData userData;
+    [SerializeField] private OwnerStat userStat;
+    [SerializeField] private UserData userData;
 
     private string path;
     private string persistentPath;
@@ -69,7 +69,7 @@ public class JSONSaving : Singleton<JSONSaving>
         string json = JsonUtility.ToJson(userData);
         using StreamWriter writer = new StreamWriter(persistentPath);
         writer.Write(json);
-        //Debug.Log(persistentPath);
+        Debug.Log(persistentPath);
     }
 
     public void LoadData()
@@ -84,6 +84,6 @@ public class JSONSaving : Singleton<JSONSaving>
                 System.Globalization.CultureInfo.InvariantCulture); 
             userData.CurrentPlayTimeFormatted = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         }
-        //Debug.Log(persistentPath);
+        Debug.Log(persistentPath);
     }
 }

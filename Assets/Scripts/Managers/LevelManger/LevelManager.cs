@@ -60,17 +60,17 @@ public class LevelManager : Singleton<LevelManager>, ISubcriber
 
     public void LevelCompleted()
     {
-        GoldEarned = Formula.WinningGoldEarned(UserData.Level);
+        GoldEarned = Formula.WinningGoldEarned(JSONSaving.Instance.UserData.Level);
+        JSONSaving.Instance.UserData.Level++;
+        if (JSONSaving.Instance.UserData.Level > 1 && !JSONSaving.Instance.UserData.StartCounting)
+        {
+            JSONSaving.Instance.UserData.CurrentPlayTimeFormatted = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            JSONSaving.Instance.UserData.StartCounting = true;
+        }  
         PlayerWon = true;
         GameManager.Instance.SwitchState(GameState.MainMenu);
         levelGenerator.SetPlayerOwnedBuildings();
-        currentLevel.SetLevelStatus(LevelStatus.Status.Completed);
-        UserData.Level++;
-        if (UserData.Level > 1 && !UserData.StartCounting)
-        {
-            UserData.CurrentPlayTimeFormatted = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            UserData.StartCounting = true;
-        }
+        currentLevel.SetLevelStatus(LevelStatus.Status.Completed);     
         JSONSaving.Instance.UserData.Level = UserData.Level;
         SetLevel();      
         levelGenerator.LoadNextLevel(); 

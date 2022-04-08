@@ -22,7 +22,8 @@ public class UIMainMenu : UICanvas
 
     public void OpenPanel()
     {
-        int playerGold = UpgradeSystem.Instance.Player.ownerStat.Gold;
+        int playerGold = JSONSaving.Instance.UserData.UserStat.Gold;
+        UpdateTextInfo(TxtGoldMainMenu, playerGold.ToString());
         if (LevelManager.Instance.PlayerWon)
         {
             LevelManager.Instance.PlayerWon = false;
@@ -37,40 +38,72 @@ public class UIMainMenu : UICanvas
             return;
         }
 
-        if (JSONSaving.Instance.UserData.Level > 1)
+        if (JSONSaving.Instance.UserData.Level <= 1)
         {
-            PColorSwitcher.SetActive(false);
-            PUpgrades.SetActive(true);            
-        }
-        else
-        {
+            POfflineEarnings.SetActive(false);
             PColorSwitcher.SetActive(true);
             PUpgrades.SetActive(false);
         }
-
-        if (!JSONSaving.Instance.UserData.PassedFirstLevel)
-        {
-            POfflineEarnings.SetActive(false);
-        }
         else
         {
-            if (!showOfflineEarnings)
-            {
-                PUpgrades.SetActive(true);
-                POfflineEarnings.SetActive(true); 
-                PColorSwitcher.SetActive(false);
-                UpdateTextInfo(TxtTimeAway, UpgradeSystem.Instance.TimeAway());
-                UpdateTextInfo(TxtGoldOfflineEarnings, UpgradeSystem.Instance.GoldOfflineEarnings().ToString());
-                showOfflineEarnings = true;
-            }
-            else
+            if (!JSONSaving.Instance.UserData.PassedFirstLevel)
             {
                 POfflineEarnings.SetActive(false);
                 PColorSwitcher.SetActive(false);
                 PUpgrades.SetActive(true);
             }
-            UpdateTextInfo(TxtGoldMainMenu, playerGold.ToString());
+            else
+            {
+                if (!showOfflineEarnings)
+                {
+                    PUpgrades.SetActive(true);
+                    POfflineEarnings.SetActive(true);
+                    PColorSwitcher.SetActive(false);
+                    UpdateTextInfo(TxtTimeAway, UpgradeSystem.Instance.TimeAway());
+                    UpdateTextInfo(TxtGoldOfflineEarnings, UpgradeSystem.Instance.GoldOfflineEarnings().ToString());
+                    showOfflineEarnings = true;
+                }
+                else
+                {
+                    POfflineEarnings.SetActive(false);
+                    PColorSwitcher.SetActive(false);
+                    PUpgrades.SetActive(true);
+                }
+            }
         }
+
+        //{
+        //    PColorSwitcher.SetActive(false);
+        //    PUpgrades.SetActive(true);            
+        //}
+        //else
+        //{
+        //    PColorSwitcher.SetActive(true);
+        //    PUpgrades.SetActive(false);
+        //}
+
+        //if (!JSONSaving.Instance.UserData.PassedFirstLevel)
+        //{
+        //    POfflineEarnings.SetActive(false);
+        //}
+        //else
+        //{
+        //    if (!showOfflineEarnings)
+        //    {
+        //        PUpgrades.SetActive(true);
+        //        POfflineEarnings.SetActive(true); 
+        //        PColorSwitcher.SetActive(false);
+        //        UpdateTextInfo(TxtTimeAway, UpgradeSystem.Instance.TimeAway());
+        //        UpdateTextInfo(TxtGoldOfflineEarnings, UpgradeSystem.Instance.GoldOfflineEarnings().ToString());
+        //        showOfflineEarnings = true;
+        //    }
+        //    else
+        //    {
+        //        POfflineEarnings.SetActive(false);
+        //        PColorSwitcher.SetActive(false);
+        //        PUpgrades.SetActive(true);
+        //    }
+        //}
     }
 
     public void TapToStart()
@@ -98,6 +131,7 @@ public class UIMainMenu : UICanvas
     public void OnWinning(int gold)
     {
         GoldEarned = gold;
+
         PMainMenu.SetActive(false);
         PWon.SetActive(true);
         UpdateTextInfo(TxtGoldWinning, gold.ToString());
@@ -107,7 +141,7 @@ public class UIMainMenu : UICanvas
     {
         GoldEarned = gold;
         PMainMenu.SetActive(false);
-        PLose.SetActive(true);
+        PWon.SetActive(true);
         UpdateTextInfo(TxtGoldLosing, gold.ToString());
     }
 
@@ -122,17 +156,16 @@ public class UIMainMenu : UICanvas
 
     public void ClaimGoldOfflineEarnings()
     {
-        GoldEarned = UpgradeSystem.Instance.GoldOfflineEarnings();
+        GoldEarned = UpgradeSystem.Instance.GoldOfflineEarnings(); 
         POfflineEarnings.SetActive(false);
-        UpgradeSystem.Instance.AddGold(GoldEarned);
-        int playerGold = UpgradeSystem.Instance.Player.ownerStat.Gold;
-        UpdateTextInfo(TxtGoldMainMenu, playerGold.ToString());
+        UpdateTextInfo(TxtGoldMainMenu, UpgradeSystem.Instance.AddGold(GoldEarned).ToString());
     }
 
     public void ClaimGoldAfterPlaying()
     {
         PMainMenu.SetActive(true);
         UpgradeSystem.Instance.AddGold(GoldEarned);
+        Debug.Log(UpgradeSystem.Instance.UserData.UserStat.Gold);
         if (PWon.activeInHierarchy)
         {
             PWon.SetActive(false);
@@ -141,6 +174,7 @@ public class UIMainMenu : UICanvas
         {
             PLose.SetActive(true);
         }
+        OpenPanel();
     }
 
     public void UpdateTextInfo(TextMeshProUGUI textMesh, string info)

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class UpgradeSystem : Singleton<UpgradeSystem>
 {
@@ -22,9 +23,10 @@ public class UpgradeSystem : Singleton<UpgradeSystem>
         Player = LevelManager.Instance.LevelGenerator.PlayerData as Player;
     }
 
-    public void AddGold(int gold)
+    public int AddGold(int gold)
     {
         UserData.UserStat.Gold += gold;
+        return UserData.UserStat.Gold;
     }
 
     public void UpgradeStartUnits()

@@ -1464,7 +1464,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5088493837329966515
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5326,7 +5326,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3900065383172251345
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11119,6 +11119,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 158316456298395375}
     m_Modifications:
+    - target: {fileID: 780890347912660618, guid: 5865b5c51336d9947b41573e8f8cbf70, type: 3}
+      propertyPath: m_text
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 780890347912660618, guid: 5865b5c51336d9947b41573e8f8cbf70, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7188136380637720864, guid: 5865b5c51336d9947b41573e8f8cbf70, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -11232,6 +11240,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4419158771791292512}
     m_Modifications:
+    - target: {fileID: 780890347912660618, guid: 5865b5c51336d9947b41573e8f8cbf70, type: 3}
+      propertyPath: m_text
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 780890347912660618, guid: 5865b5c51336d9947b41573e8f8cbf70, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7188136380637720864, guid: 5865b5c51336d9947b41573e8f8cbf70, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

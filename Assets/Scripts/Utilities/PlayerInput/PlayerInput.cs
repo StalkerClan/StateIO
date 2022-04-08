@@ -244,5 +244,6 @@ public class PlayerInput : Singleton<PlayerInput>
         prepBuildings.Clear();
         startPosition = Vector3.zero;
         targetPosition = Vector3.zero;
+        hashSetSelectedBuildings.Clear();
     }
 }
