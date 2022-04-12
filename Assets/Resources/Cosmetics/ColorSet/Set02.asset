@@ -15,6 +15,6 @@ MonoBehaviour:
   KeyColor: {r: 0.19607845, g: 0.41176474, b: 0.5529412, a: 0}
   FirstColor: {r: 0.5647059, g: 0.8196079, b: 0.9843138, a: 0}
   SecondColor: {r: 0.29411766, g: 0.7058824, b: 0.9725491, a: 0}
-  PlayerUsed: 0
+  PlayerUsed: 1
   EnemyUsed: 0
   Locked: 1

@@ -48,7 +48,6 @@ public abstract class Owner : MonoBehaviour
 
     public virtual void ChangeColor(ColorSet newColorSet)
     {
-        ColorSet = newColorSet;       
         OnChangingColorSet?.Invoke(newColorSet);
     }
 }

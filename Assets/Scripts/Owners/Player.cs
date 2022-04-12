@@ -8,14 +8,19 @@ public class Player : Owner
     public event Action<int> OnUpgradeStartUnits = delegate { };
     public event Action<float> OnUpgradeProduceSpeed = delegate { };
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        OwnerStat.ColorSet = ColorSet;
+        ownerStat.ColorSet.PlayerUsed = true;
     }
 
     public override void ChangeColor(ColorSet newColorSet)
     {
-        this.ColorSet.PlayerUsed = false;
+        ColorSet.PlayerUsed = false;
+        if (newColorSet.EnemyUsed)
+        {
+            newColorSet.EnemyUsed = false;
+        }
+        ColorSet = newColorSet;
         newColorSet.PlayerUsed = true;
         base.ChangeColor(newColorSet);
     }

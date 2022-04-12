@@ -11,8 +11,8 @@ public class Enemy : Owner
 
     public override void ChangeColor(ColorSet newColorSet)
     {
-        this.ColorSet.EnemyUsed = false;
-        newColorSet.EnemyUsed = true;
+        ColorSet = newColorSet;
+        ColorSet.EnemyUsed = true;
         base.ChangeColor(newColorSet);
     }
 }

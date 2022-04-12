@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Player
   ColorSet: {fileID: 11400000, guid: 6734aa050c31675408b8a9cd5e6c991b, type: 2}
-  ProduceSpeed: 1.08
+  ProduceSpeed: 1
   FighterPerTick: 1
-  StartFighter: 11
+  StartFighter: 10
   MaxCapacity: 50
   Gold: 0
   DefaultMoveSpeed: 1.2
   BuildingIcon: {fileID: 21300000, guid: 75e7fc89f6f5792448bdd3a330171255, type: 3}
   FighterIcon: {fileID: 21300000, guid: f3a2d8a65ec7d57449b4b6597e930160, type: 3}
-  Initialized: 0
+  Initialized: 1
