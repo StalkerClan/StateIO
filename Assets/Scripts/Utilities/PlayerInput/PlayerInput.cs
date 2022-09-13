@@ -62,7 +62,6 @@ public class PlayerInput : Singleton<PlayerInput>
 
     public void SelectTarget()
     {
-        Debug.Log("haha");
         #region MouseInput
         #region MouseDown
         if (Input.GetMouseButton(0))
