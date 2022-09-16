@@ -1654,6 +1654,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: befe4da69d067d04487f8b009963c14b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &426032459
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 426032460}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &426032460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426032459}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &433875791
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1804,6 +1834,7 @@ MonoBehaviour:
     m_Bits: 64
   prepBuildings: []
   radius: 0
+  isPlaying: 0
 --- !u!4 &465365121
 Transform:
   m_ObjectHideFlags: 0
@@ -2754,6 +2785,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3152af26207877f46b92500205d6ff54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  userStat: {fileID: 0}
+  userData:
+    Level: 0
+    UserStat: {fileID: 0}
+    LastTimePlayedFormatted: 
+    CurrentPlayTimeFormatted: 
+    PassedFirstLevel: 0
+    StartCounting: 0
 --- !u!114 &989675395 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8019386915848481459, guid: 5f5775c6d419c2743aec965c3497b7ab, type: 3}
@@ -5270,8 +5309,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLevel: {fileID: 0}
   Player: {fileID: 0}
-  LevelID: 0
-  PlayerCurrency: 0
+  UserData:
+    Level: 0
+    UserStat: {fileID: 0}
+    LastTimePlayedFormatted: 
+    CurrentPlayTimeFormatted: 
+    PassedFirstLevel: 0
+    StartCounting: 0
+  PlayerGold: 0
+  GoldEarned: 0
+  PlayerWon: 0
+  PlayerLose: 0
 --- !u!1001 &2064934979
 PrefabInstance:
   m_ObjectHideFlags: 0
